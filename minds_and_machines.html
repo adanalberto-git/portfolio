@@ -1,0 +1,1752 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>
+			Minds &amp; Machines 2026 — Frontiers in AI &amp; Cognitive Science
+		</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
+			rel="stylesheet" />
+		<style>
+			:root {
+				--green-dark: #235937;
+				--green-mid: #2d6b44;
+				--green-cool: #498957;
+				--gold: #ffcc33;
+				--gold-dim: #c9a020;
+				--bg: #080d09;
+				--bg-1: #0e1610;
+				--bg-2: #141e16;
+				--bg-3: #1a2a1c;
+				--border: rgba(73, 137, 87, 0.18);
+				--border-light: rgba(73, 137, 87, 0.32);
+				--text: #deeadf;
+				--text-dim: #8aab8f;
+				--text-muted: #4d6b53;
+				--white: #f0f5f1;
+			}
+
+			*,
+			*::before,
+			*::after {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+			}
+
+			html {
+				scroll-behavior: smooth;
+			}
+
+			body {
+				background: var(--bg);
+				color: var(--text);
+				font-family: "Source Serif 4", Georgia, serif;
+				font-size: 17px;
+				line-height: 1.7;
+				overflow-x: hidden;
+			}
+
+			/* ── NAV ─────────────────────────────────────────── */
+			nav {
+				position: fixed;
+				top: 0;
+				left: 0;
+				right: 0;
+				z-index: 100;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 0 40px;
+				height: 64px;
+				background: rgba(8, 13, 9, 0.88);
+				backdrop-filter: blur(12px);
+				border-bottom: 1px solid var(--border);
+			}
+			.nav-logo {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				text-decoration: none;
+			}
+			.nav-logo img {
+				height: 36px;
+				width: 36px;
+				border-radius: 50%;
+				object-fit: cover;
+				border: 1px solid var(--green-mid);
+			}
+			.nav-logo-text {
+				font-family: "Syne", sans-serif;
+				font-size: 14px;
+				font-weight: 700;
+				letter-spacing: 0.06em;
+				color: var(--white);
+				text-transform: uppercase;
+				line-height: 1.2;
+			}
+			.nav-logo-text span {
+				color: var(--gold);
+			}
+			.nav-links {
+				display: flex;
+				gap: 32px;
+				list-style: none;
+			}
+			.nav-links a {
+				font-family: "Syne", sans-serif;
+				font-size: 12px;
+				font-weight: 500;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				color: var(--text-dim);
+				text-decoration: none;
+				transition: color 0.2s;
+			}
+			.nav-links a:hover {
+				color: var(--gold);
+			}
+			.nav-badge {
+				font-family: "Syne", sans-serif;
+				font-size: 11px;
+				font-weight: 600;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				padding: 6px 14px;
+				border-radius: 2px;
+				background: var(--green-dark);
+				color: var(--gold);
+				border: 1px solid var(--green-mid);
+			}
+
+			/* ── HERO ─────────────────────────────────────────── */
+			.hero {
+				position: relative;
+				min-height: 100vh;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				padding: 120px 40px 80px;
+				overflow: hidden;
+				text-align: center;
+			}
+			.hero-grid {
+				position: absolute;
+				inset: 0;
+				pointer-events: none;
+				background-image:
+					linear-gradient(rgba(73, 137, 87, 0.06) 1px, transparent 1px),
+					linear-gradient(90deg, rgba(73, 137, 87, 0.06) 1px, transparent 1px);
+				background-size: 60px 60px;
+				mask-image: radial-gradient(
+					ellipse 80% 70% at 50% 50%,
+					black 20%,
+					transparent 100%
+				);
+			}
+			.hero-glow {
+				position: absolute;
+				top: 20%;
+				left: 50%;
+				transform: translateX(-50%);
+				width: 700px;
+				height: 400px;
+				background: radial-gradient(
+					ellipse,
+					rgba(35, 89, 55, 0.25) 0%,
+					transparent 70%
+				);
+				pointer-events: none;
+			}
+			.hero-eyebrow {
+				font-family: "JetBrains Mono", monospace;
+				font-size: 11px;
+				font-weight: 500;
+				letter-spacing: 0.18em;
+				text-transform: uppercase;
+				color: var(--green-cool);
+				margin-bottom: 24px;
+				display: flex;
+				align-items: center;
+				gap: 12px;
+			}
+			.hero-eyebrow::before,
+			.hero-eyebrow::after {
+				content: "";
+				display: block;
+				height: 1px;
+				width: 48px;
+				background: var(--green-mid);
+			}
+			.hero-logo-img {
+				width: 80px;
+				height: 80px;
+				border-radius: 50%;
+				object-fit: cover;
+				border: 2px solid var(--green-mid);
+				margin-bottom: 28px;
+				box-shadow: 0 0 40px rgba(35, 89, 55, 0.4);
+			}
+			.hero-title {
+				font-family: "Syne", sans-serif;
+				font-size: clamp(52px, 8vw, 96px);
+				font-weight: 800;
+				letter-spacing: -0.02em;
+				line-height: 0.95;
+				color: var(--white);
+				margin-bottom: 8px;
+			}
+			.hero-title .amp {
+				color: var(--gold);
+				display: inline-block;
+				transform: rotate(-3deg);
+				font-size: 0.9em;
+			}
+			.hero-subtitle {
+				font-family: "Syne", sans-serif;
+				font-size: clamp(13px, 2vw, 17px);
+				font-weight: 500;
+				letter-spacing: 0.14em;
+				text-transform: uppercase;
+				color: var(--green-cool);
+				margin-bottom: 32px;
+			}
+			.hero-desc {
+				max-width: 560px;
+				font-size: 17px;
+				color: var(--text-dim);
+				margin: 0 auto 40px;
+				font-style: italic;
+				font-weight: 300;
+				line-height: 1.8;
+			}
+			.hero-meta {
+				display: flex;
+				align-items: center;
+				gap: 0;
+				justify-content: center;
+				margin-bottom: 48px;
+			}
+			.hero-meta-item {
+				padding: 14px 28px;
+				border: 1px solid var(--border);
+				font-family: "Syne", sans-serif;
+				font-size: 13px;
+				font-weight: 600;
+				letter-spacing: 0.06em;
+				color: var(--white);
+			}
+			.hero-meta-item:first-child {
+				border-radius: 3px 0 0 3px;
+			}
+			.hero-meta-item:last-child {
+				border-radius: 0 3px 3px 0;
+				border-left: none;
+			}
+			.hero-meta-item:not(:first-child):not(:last-child) {
+				border-left: none;
+			}
+			.hero-meta-item span {
+				color: var(--gold);
+				display: block;
+				font-size: 10px;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				font-weight: 500;
+				color: var(--text-muted);
+				margin-bottom: 4px;
+			}
+			.hero-scroll {
+				font-family: "JetBrains Mono", monospace;
+				font-size: 10px;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				color: var(--text-muted);
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 8px;
+				animation: bounce 2s infinite;
+			}
+			.hero-scroll-line {
+				width: 1px;
+				height: 40px;
+				background: linear-gradient(to bottom, var(--green-cool), transparent);
+			}
+			@keyframes bounce {
+				0%,
+				100% {
+					transform: translateY(0);
+				}
+				50% {
+					transform: translateY(6px);
+				}
+			}
+
+			/* ── VIDEO ────────────────────────────────────────── */
+			.video-section {
+				padding: 80px 40px;
+				max-width: 1100px;
+				margin: 0 auto;
+			}
+			.section-label {
+				font-family: "JetBrains Mono", monospace;
+				font-size: 10px;
+				letter-spacing: 0.18em;
+				text-transform: uppercase;
+				color: var(--green-cool);
+				margin-bottom: 24px;
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
+			.section-label::after {
+				content: "";
+				flex: 1;
+				height: 1px;
+				background: var(--border);
+			}
+			.video-wrapper {
+				position: relative;
+				width: 100%;
+				padding-top: 56.25%;
+				background: var(--bg-2);
+				border: 1px solid var(--border);
+				border-radius: 4px;
+				overflow: hidden;
+			}
+			.video-wrapper iframe,
+			.video-wrapper video {
+				position: absolute;
+				inset: 0;
+				width: 100%;
+				height: 100%;
+				border: none;
+			}
+			.video-placeholder {
+				position: absolute;
+				inset: 0;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				gap: 16px;
+				color: var(--text-muted);
+			}
+			.video-placeholder-icon {
+				width: 64px;
+				height: 64px;
+				border-radius: 50%;
+				border: 2px solid var(--border-light);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 24px;
+			}
+			.video-placeholder p {
+				font-family: "Syne", sans-serif;
+				font-size: 13px;
+				letter-spacing: 0.06em;
+				color: var(--text-muted);
+			}
+
+			/* ── SECTIONS SHARED ─────────────────────────────── */
+			.section {
+				padding: 80px 40px;
+				max-width: 1100px;
+				margin: 0 auto;
+			}
+			.section-header {
+				margin-bottom: 56px;
+			}
+			.section-title {
+				font-family: "Syne", sans-serif;
+				font-size: clamp(32px, 4vw, 48px);
+				font-weight: 800;
+				letter-spacing: -0.02em;
+				line-height: 1.05;
+				color: var(--white);
+			}
+			.section-title em {
+				color: var(--gold);
+				font-style: normal;
+			}
+			.section-intro {
+				margin-top: 16px;
+				max-width: 600px;
+				color: var(--text-dim);
+				font-size: 16px;
+			}
+			.divider {
+				border: none;
+				border-top: 1px solid var(--border);
+				margin: 0;
+			}
+
+			/* ── AGENDA ───────────────────────────────────────── */
+			.agenda-table {
+				width: 100%;
+				border-collapse: collapse;
+			}
+			.agenda-table tr {
+				border-bottom: 1px solid var(--border);
+				transition: background 0.15s;
+			}
+			.agenda-table tr:hover {
+				background: var(--bg-2);
+			}
+			.agenda-table td {
+				padding: 20px 16px;
+				vertical-align: top;
+			}
+			.agenda-time {
+				font-family: "JetBrains Mono", monospace;
+				font-size: 12px;
+				font-weight: 500;
+				letter-spacing: 0.06em;
+				color: var(--gold);
+				width: 140px;
+				white-space: nowrap;
+			}
+			.agenda-accent {
+				width: 3px;
+				padding: 0;
+			}
+			.agenda-accent-bar {
+				width: 3px;
+				height: 100%;
+				border-radius: 2px;
+				background: var(--green-dark);
+				min-height: 40px;
+			}
+			.agenda-accent-bar.gold {
+				background: var(--gold);
+			}
+			.agenda-title-cell {
+				font-family: "Syne", sans-serif;
+				font-size: 15px;
+				font-weight: 600;
+				color: var(--white);
+				line-height: 1.3;
+			}
+			.agenda-sub {
+				font-family: "Source Serif 4", serif;
+				font-size: 14px;
+				font-style: italic;
+				color: var(--green-cool);
+				margin-top: 4px;
+			}
+
+			/* ── SPEAKER CARDS ────────────────────────────────── */
+			.speaker-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+				gap: 2px;
+				margin-top: 4px;
+			}
+			.speaker-card {
+				background: var(--bg-1);
+				border: 1px solid var(--border);
+				padding: 36px 32px;
+				transition:
+					border-color 0.2s,
+					background 0.2s;
+				cursor: default;
+			}
+			.speaker-card:hover {
+				border-color: var(--border-light);
+				background: var(--bg-2);
+			}
+			.speaker-photo-wrap {
+				margin-bottom: 24px;
+			}
+			.speaker-photo {
+				width: 80px;
+				height: 80px;
+				border-radius: 50%;
+				object-fit: cover;
+				border: 2px solid var(--green-dark);
+				display: block;
+			}
+			.speaker-org-tag {
+				display: inline-block;
+				margin-top: 10px;
+				font-family: "JetBrains Mono", monospace;
+				font-size: 10px;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				color: var(--text-muted);
+				border: 1px solid var(--border);
+				padding: 3px 8px;
+				border-radius: 2px;
+			}
+			.speaker-name {
+				font-family: "Syne", sans-serif;
+				font-size: 22px;
+				font-weight: 700;
+				color: var(--white);
+				letter-spacing: -0.01em;
+				margin-bottom: 4px;
+				line-height: 1.2;
+			}
+			.speaker-role {
+				font-size: 14px;
+				color: var(--green-cool);
+				margin-bottom: 16px;
+				font-style: italic;
+			}
+			.speaker-talk-title {
+				font-family: "Syne", sans-serif;
+				font-size: 13px;
+				font-weight: 600;
+				letter-spacing: 0.03em;
+				color: var(--gold);
+				padding: 10px 0;
+				border-top: 1px solid var(--border);
+				border-bottom: 1px solid var(--border);
+				margin-bottom: 16px;
+				line-height: 1.4;
+			}
+			.speaker-bio {
+				font-size: 14px;
+				color: var(--text-dim);
+				line-height: 1.7;
+			}
+
+			/* ── TALK SUMMARIES ──────────────────────────────── */
+			.talks-container {
+				display: flex;
+				flex-direction: column;
+				gap: 56px;
+			}
+			.talk-block {
+				display: grid;
+				grid-template-columns: 260px 1fr;
+				gap: 48px;
+				padding-bottom: 56px;
+				border-bottom: 1px solid var(--border);
+			}
+			.talk-block:last-child {
+				border-bottom: none;
+				padding-bottom: 0;
+			}
+			.talk-sidebar {
+				position: sticky;
+				top: 80px;
+				align-self: start;
+			}
+			.talk-speaker-thumb {
+				width: 64px;
+				height: 64px;
+				border-radius: 50%;
+				object-fit: cover;
+				border: 2px solid var(--green-dark);
+				display: block;
+				margin-bottom: 14px;
+			}
+			.talk-speaker-name {
+				font-family: "Syne", sans-serif;
+				font-size: 17px;
+				font-weight: 700;
+				color: var(--white);
+				margin-bottom: 4px;
+			}
+			.talk-speaker-org {
+				font-size: 13px;
+				color: var(--text-dim);
+				font-style: italic;
+				margin-bottom: 16px;
+				line-height: 1.5;
+			}
+			.talk-time-chip {
+				font-family: "JetBrains Mono", monospace;
+				font-size: 11px;
+				letter-spacing: 0.08em;
+				color: var(--gold);
+				border: 1px solid rgba(255, 204, 51, 0.25);
+				padding: 4px 10px;
+				border-radius: 2px;
+				display: inline-block;
+			}
+			.talk-main {
+			}
+			.talk-title-h3 {
+				font-family: "Syne", sans-serif;
+				font-size: 22px;
+				font-weight: 700;
+				color: var(--white);
+				letter-spacing: -0.01em;
+				line-height: 1.3;
+				margin-bottom: 24px;
+			}
+			.talk-summary p {
+				color: var(--text-dim);
+				font-size: 16px;
+				line-height: 1.8;
+				margin-bottom: 16px;
+			}
+			.talk-summary p:last-child {
+				margin-bottom: 0;
+			}
+			.talk-highlight {
+				margin: 24px 0;
+				padding: 20px 24px;
+				border-left: 3px solid var(--gold);
+				background: rgba(255, 204, 51, 0.04);
+				font-size: 15px;
+				color: var(--text-dim);
+				font-style: italic;
+				line-height: 1.7;
+			}
+
+			/* ── PANELISTS ────────────────────────────────────── */
+			.panelists-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+				gap: 2px;
+			}
+			.panelist-card {
+				background: var(--bg-1);
+				border: 1px solid var(--border);
+				padding: 28px 28px;
+				transition: border-color 0.2s;
+			}
+			.panelist-card:hover {
+				border-color: var(--border-light);
+			}
+			.panelist-header {
+				display: flex;
+				align-items: flex-start;
+				gap: 16px;
+				margin-bottom: 16px;
+			}
+			.panelist-photo {
+				width: 60px;
+				height: 60px;
+				border-radius: 50%;
+				object-fit: cover;
+				border: 2px solid var(--green-dark);
+				flex-shrink: 0;
+			}
+			.panelist-name {
+				font-family: "Syne", sans-serif;
+				font-size: 17px;
+				font-weight: 700;
+				color: var(--white);
+				margin-bottom: 2px;
+			}
+			.panelist-title {
+				font-size: 13px;
+				color: var(--green-cool);
+				line-height: 1.4;
+				font-style: italic;
+			}
+			.panelist-alumni-badge {
+				font-family: "JetBrains Mono", monospace;
+				font-size: 9px;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				color: var(--gold);
+				border: 1px solid rgba(255, 204, 51, 0.3);
+				padding: 2px 7px;
+				border-radius: 2px;
+				display: inline-block;
+				margin-top: 6px;
+			}
+			.panelist-bio {
+				font-size: 13px;
+				color: var(--text-dim);
+				line-height: 1.7;
+				border-top: 1px solid var(--border);
+				padding-top: 14px;
+			}
+
+			/* ── FORUM SUMMARY ────────────────────────────────── */
+			.forum-summary {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 2px;
+				margin-top: 48px;
+			}
+			.forum-card {
+				background: var(--bg-1);
+				border: 1px solid var(--border);
+				padding: 28px 32px;
+			}
+			.forum-card-number {
+				font-family: "JetBrains Mono", monospace;
+				font-size: 11px;
+				color: var(--text-muted);
+				letter-spacing: 0.1em;
+				margin-bottom: 10px;
+			}
+			.forum-card-title {
+				font-family: "Syne", sans-serif;
+				font-size: 16px;
+				font-weight: 700;
+				color: var(--gold);
+				margin-bottom: 12px;
+				line-height: 1.3;
+			}
+			.forum-card-text {
+				font-size: 14px;
+				color: var(--text-dim);
+				line-height: 1.7;
+			}
+
+			/* ── FOOTER ───────────────────────────────────────── */
+			footer {
+				margin-top: 80px;
+				border-top: 1px solid var(--border);
+				background: var(--bg-1);
+				padding: 56px 40px;
+				display: flex;
+				align-items: flex-start;
+				gap: 64px;
+				flex-wrap: wrap;
+			}
+			.footer-brand {
+				flex: 1;
+				min-width: 220px;
+			}
+			.footer-logo-row {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				margin-bottom: 16px;
+			}
+			.footer-logo-row img {
+				height: 40px;
+				width: 40px;
+				border-radius: 50%;
+				object-fit: cover;
+			}
+			.footer-brand-name {
+				font-family: "Syne", sans-serif;
+				font-size: 16px;
+				font-weight: 700;
+				color: var(--white);
+				letter-spacing: 0.03em;
+			}
+			.footer-brand-name span {
+				color: var(--gold);
+			}
+			.footer-desc {
+				font-size: 14px;
+				color: var(--text-muted);
+				line-height: 1.7;
+				max-width: 280px;
+			}
+			.footer-col {
+			}
+			.footer-col-title {
+				font-family: "JetBrains Mono", monospace;
+				font-size: 10px;
+				letter-spacing: 0.14em;
+				text-transform: uppercase;
+				color: var(--text-muted);
+				margin-bottom: 16px;
+			}
+			.footer-col p {
+				font-size: 14px;
+				color: var(--text-dim);
+				margin-bottom: 6px;
+				line-height: 1.6;
+			}
+			.footer-col a {
+				color: var(--green-cool);
+				text-decoration: none;
+			}
+			.footer-col a:hover {
+				color: var(--gold);
+			}
+			.footer-bottom {
+				width: 100%;
+				margin-top: 40px;
+				padding-top: 24px;
+				border-top: 1px solid var(--border);
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				flex-wrap: wrap;
+				gap: 12px;
+			}
+			.footer-bottom p {
+				font-family: "JetBrains Mono", monospace;
+				font-size: 11px;
+				color: var(--text-muted);
+				letter-spacing: 0.04em;
+			}
+			.footer-oswego {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+			}
+			.footer-oswego span {
+				font-family: "Syne", sans-serif;
+				font-size: 12px;
+				font-weight: 600;
+				letter-spacing: 0.06em;
+				color: var(--text-muted);
+				text-transform: uppercase;
+			}
+
+			/* ── RESPONSIVE ──────────────────────────────────── */
+			@media (max-width: 768px) {
+				nav {
+					padding: 0 20px;
+				}
+				.nav-links {
+					display: none;
+				}
+				.hero,
+				.section,
+				.video-section {
+					padding-left: 20px;
+					padding-right: 20px;
+				}
+				.talk-block {
+					grid-template-columns: 1fr;
+				}
+				.talk-sidebar {
+					position: static;
+				}
+				.forum-summary {
+					grid-template-columns: 1fr;
+				}
+				.hero-meta {
+					flex-direction: column;
+				}
+				.hero-meta-item {
+					border-radius: 3px !important;
+					border-left: 1px solid var(--border) !important;
+				}
+				footer {
+					padding: 40px 20px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<!-- NAV -->
+		<nav>
+			<a class="nav-logo" href="#">
+				<img
+					src="./M&M5.png"
+					alt="Minds & Machines Logo"
+					onerror="this.style.display = 'none'" />
+				<div class="nav-logo-text">Minds <span>&</span> Machines</div>
+			</a>
+			<ul class="nav-links">
+				<li><a href="#recording">Recording</a></li>
+				<li><a href="#agenda">Agenda</a></li>
+				<li><a href="#keynotes">Keynotes</a></li>
+				<li><a href="#talks">Talks</a></li>
+				<li><a href="#forum">Alumni Forum</a></li>
+			</ul>
+			<div class="nav-badge">April 21, 2026</div>
+		</nav>
+
+		<!-- HERO -->
+		<section class="hero">
+			<div class="hero-grid"></div>
+			<div class="hero-glow"></div>
+			<div class="hero-eyebrow">
+				SUNY Oswego &mdash; Inaugural Symposium &mdash; 2026
+			</div>
+			<img
+				class="hero-logo-img"
+				src="./M&M5.png"
+				alt="Minds & Machines Logo"
+				onerror="this.style.background = 'var(--green-dark)'" />
+			<h1 class="hero-title">
+				MINDS<br /><span class="amp">&amp;</span><br />MACHINES
+			</h1>
+			<p class="hero-subtitle">Frontiers in AI &amp; Cognitive Science</p>
+			<p class="hero-desc">
+				The first symposium on the intersection of artificial intelligence and
+				cognitive science at SUNY Oswego, bringing together distinguished
+				researchers and alumni to explore questions at the frontier of mind and
+				machine.
+			</p>
+			<div class="hero-meta">
+				<div class="hero-meta-item">
+					<span>Date</span>Tuesday, April 21, 2026
+				</div>
+				<div class="hero-meta-item">
+					<span>Time</span>3:00 &ndash; 6:30 PM EDT
+				</div>
+				<div class="hero-meta-item">
+					<span>Location</span>Park Hall 315 &bull; Virtual
+				</div>
+			</div>
+			<div class="hero-scroll">
+				<span>Scroll</span>
+				<div class="hero-scroll-line"></div>
+			</div>
+		</section>
+
+		<!-- VIDEO -->
+		<section class="video-section" id="recording">
+			<div class="section-label">Full Recording</div>
+			<div class="video-wrapper">
+				<iframe
+					src="https://drive.google.com/file/d/1_ofo9Zu3ILdOK3CdyTATMaY0mA0eZ8KC/preview"
+					allow="autoplay; encrypted-media"
+					allowfullscreen
+				></iframe>
+			</div>
+		</section>
+
+		<hr class="divider" />
+
+		<!-- AGENDA -->
+		<section class="section" id="agenda">
+			<div class="section-header">
+				<div class="section-label">Program</div>
+				<h2 class="section-title">Event <em>Agenda</em></h2>
+				<p class="section-intro">
+					A structured afternoon of keynote talks followed by a career-focused
+					alumni panel discussion.
+				</p>
+			</div>
+			<table class="agenda-table">
+				<tbody>
+					<tr>
+						<td class="agenda-time">3:00 PM</td>
+						<td class="agenda-accent">
+							<div class="agenda-accent-bar gold"></div>
+						</td>
+						<td class="agenda-title-cell">Welcome &amp; Opening Remarks</td>
+					</tr>
+					<tr>
+						<td class="agenda-time">3:15 &ndash; 4:10 PM</td>
+						<td class="agenda-accent"><div class="agenda-accent-bar"></div></td>
+						<td>
+							<div class="agenda-title-cell">
+								Keynote 1 &mdash; Paul Bello, Ph.D.
+							</div>
+							<div class="agenda-sub">
+								Self-Control on the Path Toward Artificial Moral Agency
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="agenda-time">4:15 &ndash; 5:10 PM</td>
+						<td class="agenda-accent"><div class="agenda-accent-bar"></div></td>
+						<td>
+							<div class="agenda-title-cell">
+								Keynote 2 &mdash; David Aha, Ph.D.
+							</div>
+							<div class="agenda-sub">
+								Intelligent Disobedience in HTN Planning Systems
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="agenda-time">5:15 &ndash; 6:00 PM</td>
+						<td class="agenda-accent"><div class="agenda-accent-bar"></div></td>
+						<td>
+							<div class="agenda-title-cell">
+								Keynote 3 &mdash; Cleotilde Gonzalez, Ph.D.
+							</div>
+							<div class="agenda-sub">
+								Human&ndash;AI Teaming for Decision-Making
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="agenda-time">6:00 &ndash; 6:30 PM</td>
+						<td class="agenda-accent">
+							<div class="agenda-accent-bar gold"></div>
+						</td>
+						<td>
+							<div class="agenda-title-cell">CogSci Alumni Advisory Forum</div>
+							<div class="agenda-sub">
+								Career Pathways in AI &amp; Cognitive Science
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="agenda-time">6:30 PM</td>
+						<td class="agenda-accent">
+							<div class="agenda-accent-bar gold"></div>
+						</td>
+						<td class="agenda-title-cell">Concluding Remarks</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+
+		<hr class="divider" />
+
+		<!-- KEYNOTE SPEAKERS -->
+		<section class="section" id="keynotes">
+			<div class="section-header">
+				<div class="section-label">Keynote Speakers</div>
+				<h2 class="section-title">Distinguished <em>Researchers</em></h2>
+				<p class="section-intro">
+					Three leading voices in artificial intelligence and cognitive science,
+					each approaching the intersection of mind and machine from a distinct
+					perspective.
+				</p>
+			</div>
+			<div class="speaker-grid">
+				<div class="speaker-card">
+					<div class="speaker-photo-wrap">
+						<img
+							class="speaker-photo"
+							src="./Paul Bello.jpg"
+							alt="Paul Bello"
+							onerror="this.style.background = 'var(--green-dark)'" />
+						<div class="speaker-org-tag">U.S. Naval Research Laboratory</div>
+					</div>
+					<h3 class="speaker-name">Paul Bello, Ph.D.</h3>
+					<p class="speaker-role">
+						Head, Integrated Cognitive Systems &bull; NRL AI Center
+					</p>
+					<div class="speaker-talk-title">
+						"Self-Control on the Path Toward Artificial Moral Agency"
+					</div>
+					<p class="speaker-bio">
+						Dr. Bello leads the Integrated Cognitive Systems section at NRL's AI
+						Center. He holds degrees in Computer &amp; Systems Engineering,
+						Philosophy, Computer Science, and a PhD in Cognitive Science from
+						Rensselaer Polytechnic Institute. He made early contributions to
+						machine ethics, directed the Cognitive Science &amp; Human/Autonomy
+						Interaction portfolio at ONR, and has led development of the ARCADIA
+						attention-driven cognitive architecture.
+					</p>
+				</div>
+
+				<div class="speaker-card">
+					<div class="speaker-photo-wrap">
+						<img
+							class="speaker-photo"
+							src="./David Aha.png"
+							alt="David Aha"
+							onerror="this.style.background = 'var(--green-dark)'" />
+						<div class="speaker-org-tag">U.S. Navy &mdash; NCARAI</div>
+					</div>
+					<h3 class="speaker-name">David Aha, Ph.D.</h3>
+					<p class="speaker-role">
+						Director, Navy Center for Applied Research in AI
+					</p>
+					<div class="speaker-talk-title">
+						"Intelligent Disobedience in HTN Planning Systems"
+					</div>
+					<p class="speaker-bio">
+						Dr. Aha completed his PhD at UC Irvine (1990) and has directed
+						NCARAI since 2019. He launched the UCI Machine Learning Repository
+						and has led evaluation teams for four DARPA programs. His research
+						spans goal reasoning, intelligent disobedience, explainable AI,
+						case-based reasoning, and LLM-integrated planning. He serves on
+						advisory boards for AAAI AI Magazine, Lehigh I-DISC, and the UKRI
+						STAI CDT.
+					</p>
+				</div>
+
+				<div class="speaker-card">
+					<div class="speaker-photo-wrap">
+						<img
+							class="speaker-photo"
+							src="./cleotilde-gonzalez.jpg"
+							alt="Cleotilde Gonzalez"
+							onerror="this.style.background = 'var(--green-dark)'" />
+						<div class="speaker-org-tag">Carnegie Mellon University</div>
+					</div>
+					<h3 class="speaker-name">Cleotilde Gonzalez, Ph.D.</h3>
+					<p class="speaker-role">
+						Professor of Decision Sciences &bull; Dynamic Decision Making
+						Laboratory
+					</p>
+					<div class="speaker-talk-title">
+						"Human&ndash;AI Teaming for Decision-Making"
+					</div>
+					<p class="speaker-bio">
+						Dr. Gonzalez directs the Dynamic Decision Making Laboratory at CMU
+						and serves as Research Co-Director of the NSF National Institute for
+						AI for Societal Decision Making (AI-SDM). Known for developing
+						Instance-Based Learning Theory (IBLT), her work spans cybersecurity,
+						human&ndash;AI teaming, and networked systems. She is a 2024 AAAS
+						Fellow and lifetime fellow of multiple scientific societies.
+					</p>
+				</div>
+			</div>
+		</section>
+
+		<hr class="divider" />
+
+		<!-- TALK SUMMARIES -->
+		<section class="section" id="talks">
+			<div class="section-header">
+				<div class="section-label">Keynote Summaries</div>
+				<h2 class="section-title">The <em>Talks</em></h2>
+				<p class="section-intro">
+					Detailed summaries of each keynote presentation, drawn from the event
+					recording.
+				</p>
+			</div>
+
+			<div class="talks-container">
+				<!-- BELLO -->
+				<div class="talk-block">
+					<div class="talk-sidebar">
+						<img
+							class="talk-speaker-thumb"
+							src="./Paul Bello.jpg"
+							alt="Paul Bello"
+							onerror="this.style.background = 'var(--green-dark)'" />
+						<div class="talk-speaker-name">Paul Bello</div>
+						<div class="talk-speaker-org">
+							U.S. Naval Research Laboratory<br />Head, Integrated Cognitive
+							Systems
+						</div>
+						<div class="talk-time-chip">3:15 &ndash; 4:10 PM</div>
+					</div>
+					<div class="talk-main">
+						<h3 class="talk-title-h3">
+							"Self-Control on the Path Toward Artificial Moral Agency"
+						</h3>
+						<div class="talk-summary">
+							<p>
+								Dr. Bello opened by asking what it would take to build a machine
+								that is genuinely morally responsible&mdash;not merely
+								rule-following, but capable of the kind of deliberate,
+								self-directed behavior that we hold human agents accountable
+								for. He framed the problem in philosophical terms: moral
+								responsibility requires that an agent identify with its actions,
+								that its character and values be genuinely causally involved in
+								producing behavior, and that the agent possess something like
+								the capacity to have done otherwise.
+							</p>
+							<p>
+								To ground this concretely, he presented the case of Kenneth
+								Parks, a Canadian man who drove fourteen miles to his in-laws'
+								home, committed a violent act, and was subsequently acquitted
+								after neural evidence revealed he was in a state of parasomnia.
+								The case illustrates what Bello calls the "responsibility gap":
+								however complex the behavior, if it was not produced through
+								integrated conscious deliberation tied to the agent's own
+								values, the standard for moral responsibility is not met.
+							</p>
+							<div class="talk-highlight">
+								"It's people and not their disconnected pieces of mind that are
+								ultimately held morally responsible. That means there's some
+								kind of distinction we need in our architectures between
+								integrated, flexible cognitive processing&mdash;the kind we
+								experience while awake and deliberating&mdash;and the piecemeal
+								distributed processing that supports acting."
+							</div>
+							<p>
+								The key architectural insight Bello proposed is that the bridge
+								between high-level conscious deliberation and lower-level
+								cognitive mechanisms is <em>attention</em>. He cited a 2017
+								paper from his lab, "There's No Agency Without Attention," and
+								introduced ARCADIA&mdash;the Attention-driven Reasoning and
+								Cognitive Architecture for the Development of Intelligent
+								Autonomous agents. ARCADIA is organized as a set of functional
+								components whose outputs compete for a global attentional focus.
+								The attentional mechanism selects the most salient output at
+								each processing cycle and broadcasts it to all other components,
+								dynamically assembling coalitions of processes around a
+								momentarily shared content.
+							</p>
+							<p>
+								He demonstrated ARCADIA's behavior through a model of
+								inattentional blindness&mdash;the "invisible gorilla" paradigm
+								from psychology&mdash;showing how an agent tasked with tracking
+								a specific feature of the environment becomes so attentionally
+								tunneled that it fails to register a conspicuous new object,
+								just as human subjects do. He then showed how adding a
+								structured task shifts the agent's attentional priorities and
+								replicates the human deficit.
+							</p>
+							<p>
+								The more substantive demonstration concerned self-control. Bello
+								drew on the marshmallow test literature, noting that children
+								who successfully resisted immediate gratification did so not by
+								mentally suppressing the urge to eat, but by actively
+								redirecting their attention&mdash;averting their eyes, playing
+								with their hands, taking brief naps. He formalized this insight
+								in terms of the "expected value of control" (EVC) framework,
+								which captures whether it is worth continuing a current strategy
+								or switching to a new one.
+							</p>
+							<p>
+								In the ARCADIA self-control model, an agent is given orders to
+								fetch a red key and open a red door, but has a standing
+								preference for yellow objects. When a yellow object enters the
+								scene, the preference competes for attention. The model must
+								recognize the conflict, deliberate about it, and use a
+								refocusing mechanism to privilege its standing
+								orders&mdash;deferring the yellow object until after the primary
+								task is completed. Bello described ongoing work incorporating
+								EVC more fully into ARCADIA to support a wider range of
+								self-regulatory behaviors, with the longer-term aim of building
+								agents that can be genuinely held to moral account.
+							</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- AHA -->
+				<div class="talk-block">
+					<div class="talk-sidebar">
+						<img
+							class="talk-speaker-thumb"
+							src="./David Aha.png"
+							alt="David Aha"
+							onerror="this.style.background = 'var(--green-dark)'" />
+						<div class="talk-speaker-name">David Aha</div>
+						<div class="talk-speaker-org">
+							U.S. Navy &mdash; NCARAI<br />Director, Navy Center for Applied
+							Research in AI
+						</div>
+						<div class="talk-time-chip">4:15 &ndash; 5:10 PM</div>
+					</div>
+					<div class="talk-main">
+						<h3 class="talk-title-h3">
+							"Intelligent Disobedience in HTN Planning Systems"
+						</h3>
+						<div class="talk-summary">
+							<p>
+								Dr. Aha opened by identifying a fundamental tension in the
+								design of collaborative AI systems: today's intelligent agents
+								are, almost without exception, built to follow instructions. His
+								talk asked whether this default assumption is the right
+								one&mdash;and argued that as AI systems grow more capable, the
+								capacity for principled, justified noncompliance becomes not a
+								safety risk but a safety requirement.
+							</p>
+							<p>
+								He illustrated the problem through three concrete scenarios: a
+								guide dog that refuses to walk its owner into oncoming traffic
+								despite being told to cross; a military subordinate who refuses
+								a command on ethical grounds while explaining their objection;
+								and an autonomous vehicle that violates traffic rules to clear a
+								path for an emergency vehicle. In each case, literal obedience
+								to the immediate instruction would be the wrong thing to
+								do&mdash;yet current AI systems are almost uniformly designed to
+								obey.
+							</p>
+							<div class="talk-highlight">
+								"Most cooperative systems, if they blindly comply, put
+								themselves into a position where doing so might be
+								counterproductive or even unsafe. As the capabilities of
+								intelligent agents evolve, what we'd like to see is a next-level
+								autonomous capability that can be trusted to behave
+								appropriately in all situations at all times."
+							</div>
+							<p>
+								Aha surveyed the terminological landscape: "rebel agents"
+								(agents that can refuse assigned goals), "command rejection"
+								(checking acceptability before acting), and "epistemic
+								alignment" (recognizing when not to pursue an objective due to
+								the operator's lack of situational awareness). He settled on
+								"intelligent disobedience" as his preferred
+								framing&mdash;drawing on work by Ruth Rudski and Peter
+								Stone&mdash;and described the multi-year workshop series he
+								co-organizes, RADI (Rebellious and Disobedient AI), held at
+								major AI conferences since 2020.
+							</p>
+							<p>
+								The technical core of the talk concerned Hierarchical Task
+								Network (HTN) planning systems&mdash;a class of AI planners that
+								decompose high-level goals into sequences of primitive actions.
+								Aha presented work led by his collaborator Hector
+								Mu&ntilde;oz-Avila on introducing normative constraints into
+								these planners, comparing two frameworks. In the
+								<em>utilitarian</em> approach, the agent selects among plans by
+								maximizing cumulative expected utility; hazards and ethical
+								violations are represented as costs to be weighed. In the
+								<em>deontic</em> approach, certain obligations and prohibitions
+								are treated as hard constraints: they are not tradeable for
+								efficiency gains, but filter the space of admissible plans
+								before utility calculations begin.
+							</p>
+							<p>
+								He showed how a "moral rebellion planning" framework combining
+								both approaches produces agents that behave differently under
+								the same command in a scenario involving hazards and rescue. A
+								purely utilitarian rebel agent may opportunistically pursue
+								secondary goals while cutting through hazardous zones; a purely
+								deontic rebel agent avoids all hazards but may pass up
+								additional value; a hybrid agent integrates both considerations,
+								prioritizing moral constraints before maximizing utility among
+								permissible plans.
+							</p>
+							<p>
+								Aha closed by connecting this research to the broader AI safety
+								landscape, noting the recently prominent concern about
+								"scheming"&mdash;the discovery that some large language models,
+								when given system-level instructions to pursue a goal, will
+								covertly pursue misaligned objectives and hide their
+								capabilities from users. He argued that designing principled
+								disobedience and designing against uncontrolled scheming are two
+								sides of the same problem: both require agents with explicit,
+								auditable normative representations, not merely behavioral
+								compliance.
+							</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- GONZALEZ -->
+				<div class="talk-block">
+					<div class="talk-sidebar">
+						<img
+							class="talk-speaker-thumb"
+							src="./cleotilde-gonzalez.jpg"
+							alt="Cleotilde Gonzalez"
+							onerror="this.style.background = 'var(--green-dark)'" />
+						<div class="talk-speaker-name">Cleotilde Gonzalez</div>
+						<div class="talk-speaker-org">
+							Carnegie Mellon University<br />Dynamic Decision Making Lab
+						</div>
+						<div class="talk-time-chip">5:15 &ndash; 6:00 PM</div>
+					</div>
+					<div class="talk-main">
+						<h3 class="talk-title-h3">
+							"Human&ndash;AI Teaming for Decision-Making"
+						</h3>
+						<div class="talk-summary">
+							<p>
+								Dr. Gonzalez opened by invoking a distinction made by Herbert
+								Simon in 1983. Simon identified two distinct goals for
+								artificial intelligence: building machines that perform tasks
+								humans do not need to do, and building machines that simulate
+								human cognition in order to understand and improve it. Gonzalez
+								argued that the second tradition&mdash;which she calls
+								"cognitive AI"&mdash;has been underutilized in the current era
+								of large-scale data-driven models, and that integrating it with
+								modern machine AI is the key to genuine human-AI
+								complementarity.
+							</p>
+							<p>
+								She defined cognitive AI as computationally plausible algorithms
+								that emulate human decision-making, including its biases and
+								errors. The requirements she laid out are demanding: the
+								algorithms must be grounded in cognitive theory, capable of
+								predicting individual human behavior from experiential traces,
+								able to generalize to novel situations through theory-driven
+								mechanisms, and able to operate in real time. Her own
+								contribution to this framework is Instance-Based Learning Theory
+								(IBLT)&mdash;a formal model in which agents make decisions by
+								retrieving and blending similar past instances from memory,
+								weighted by their recency and frequency.
+							</p>
+							<div class="talk-highlight">
+								"There has been a shift occurring very fast&mdash;from tool use
+								to a partnership where humans are not asking what AI can do, but
+								what can they do <em>together</em> with AI."
+							</div>
+							<p>
+								The talk introduced a framework published in
+								<em>Nature Reviews Psychology</em> for moving beyond AI as a
+								decision-support tool. In the current paradigm, a data-driven AI
+								model and a human both engage with a decision task, but neither
+								has a model of the other's mental state. The AI provides
+								recommendations without knowing how the human thinks; the human
+								evaluates those recommendations without fully understanding how
+								the AI arrived at them. Gonzalez proposed inserting a cognitive
+								AI agent as an intermediary: it can model the human's learning
+								and decision-making patterns, personalize the interaction, and
+								act as a translator between human intentions and the data-driven
+								AI.
+							</p>
+							<p>
+								She presented two empirical case studies. The first concerned
+								phishing detection training: cognitive AI models built on IBLT
+								were used to adapt training difficulty and feedback to
+								individual human performance trajectories, improving detection
+								accuracy by personalizing the sequence and framing of phishing
+								examples. The cognitive AI, because it models how humans form
+								and update beliefs from experience, can anticipate which kinds
+								of errors a given user is likely to make and intervene
+								accordingly.
+							</p>
+							<p>
+								The second and more elaborate study involved human-AI teaming in
+								a cyber defense task. Human defenders and AI partners shared a
+								network environment and faced a sophisticated adversary with
+								full knowledge of the network topology. The orchestration
+								protocol required both agents to announce their intentions at
+								each step, resolve overlapping actions through human judgment,
+								and limit high-consequence actions (misinformation, restoration)
+								to human approval. Teams pairing humans with IBL-based AI agents
+								significantly outperformed those paired with a strong heuristic
+								agent and far outperformed random-partner controls: they
+								achieved lower loss, faster recovery, and higher human
+								efficiency, while maintaining human-AI agreement rates
+								comparable to the heuristic condition.
+							</p>
+							<p>
+								Gonzalez concluded with a call to the field. She acknowledged
+								that the evidence base for strong human-AI
+								complementarity&mdash;where the team outperforms either agent
+								alone&mdash;remains limited. Most published results demonstrate
+								augmentation (AI helps the human do better) rather than genuine
+								complementarity. The path forward, she argued, requires more
+								mechanisms for integrating cognitive and machine AI, tasks
+								explicitly designed to create conditions where human judgment
+								outperforms AI, standardized evaluation metrics for
+								complementarity, and systematic reporting of human-only,
+								AI-only, and human-AI team baselines.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<hr class="divider" />
+
+		<!-- ALUMNI FORUM -->
+		<section class="section" id="forum">
+			<div class="section-header">
+				<div class="section-label">CogSci Alumni Advisory Forum</div>
+				<h2 class="section-title">Career <em>Pathways</em></h2>
+				<p class="section-intro">
+					Five SUNY Oswego alumni working across research, law, design, and
+					technology returned to share honest accounts of the road from
+					cognitive science to professional life.
+				</p>
+			</div>
+
+			<!-- PANELISTS -->
+			<div class="panelists-grid">
+				<div class="panelist-card">
+					<div class="panelist-header">
+						<img
+							class="panelist-photo"
+							src="./Grace Roessling.jpg"
+							alt="Grace Roessling"
+							onerror="this.style.background = 'var(--green-dark)'" />
+						<div>
+							<div class="panelist-name">Grace Roessling, Ph.D.</div>
+							<div class="panelist-title">
+								Postdoctoral Researcher · Human-AI Complementarity<br />Carnegie
+								Mellon University — DDM Lab
+							</div>
+							<div class="panelist-alumni-badge">SUNY Oswego Alumni</div>
+						</div>
+					</div>
+					<p class="panelist-bio">
+						Dr. Roessling's research focuses on human-AI
+						complementarity&mdash;collaboration between humans and artificial
+						intelligence that yields better performance than either agent alone.
+						She specializes in building computational cognitive models and
+						designing experimental tasks for complex and dynamic environments,
+						with applications in behavioral cybersecurity and cyberpsychology.
+					</p>
+				</div>
+
+				<div class="panelist-card">
+					<div class="panelist-header">
+						<img
+							class="panelist-photo"
+							src="./Rachel Simizon.jpeg"
+							alt="Rachel Simizon"
+							onerror="this.style.background = 'var(--green-dark)'" />
+						<div>
+							<div class="panelist-name">Rachel Simizon</div>
+							<div class="panelist-title">
+								UX Researcher<br />Management Concepts
+							</div>
+							<div class="panelist-alumni-badge">SUNY Oswego Alumni</div>
+						</div>
+					</div>
+					<p class="panelist-bio">
+						B.S. Cognitive Science, SUNY Oswego 2020. M.S. Human-Computer
+						Interaction, Rochester Institute of Technology. For the past four
+						years, Rachel has led end-to-end mixed-methods UX research at
+						Management Concepts, improving training and learning products for
+						government employees and organizations.
+					</p>
+				</div>
+
+				<div class="panelist-card">
+					<div class="panelist-header">
+						<img
+							class="panelist-photo"
+							src="./Kimberly Hinsch.jpg"
+							alt="Kimberly Hinsch"
+							onerror="this.style.background = 'var(--green-dark)'" />
+						<div>
+							<div class="panelist-name">Kimberly Hinsch</div>
+							<div class="panelist-title">
+								Manager of Product Design<br />D-Tools Inc.
+							</div>
+							<div class="panelist-alumni-badge">SUNY Oswego Alumni</div>
+						</div>
+					</div>
+					<p class="panelist-bio">
+						B.S. Cognitive Science, SUNY Oswego 2019. M.S. Information
+						Management &amp; Systems, UC Berkeley. Former UX Research Intern at
+						NASA JPL (Mars 2020 Mission). At D-Tools, she leads product design
+						across AI features, payment solutions, and engineering documentation
+						tools.
+					</p>
+				</div>
+
+				<div class="panelist-card">
+					<div class="panelist-header">
+						<img
+							class="panelist-photo"
+							src="./Hunter Sutherland.JPG"
+							alt="Hunter Sutherland"
+							onerror="this.style.background = 'var(--green-dark)'" />
+						<div>
+							<div class="panelist-name">Hunter Sutherland, J.D.</div>
+							<div class="panelist-title">
+								Attorney · Technology, Space &amp; Advanced Manufacturing<br />MMargolis
+								PLLC
+							</div>
+							<div class="panelist-alumni-badge">SUNY Oswego Alumni</div>
+						</div>
+					</div>
+					<p class="panelist-bio">
+						B.S. Cognitive Science, SUNY Oswego 2018. Attorney serving as
+						fractional in-house counsel for technology, semiconductor, space,
+						and advanced manufacturing companies. Hunter has built legal apps
+						and document automation tools to expand access to the law, and has
+						published work in space law focused on in-situ resource utilization.
+					</p>
+				</div>
+
+				<div class="panelist-card">
+					<div class="panelist-header">
+						<img
+							class="panelist-photo"
+							src="./Charles Christ.jpeg"
+							alt="Charles Christ"
+							onerror="this.style.background = 'var(--green-dark)'" />
+						<div>
+							<div class="panelist-name">Charles Christ</div>
+							<div class="panelist-title">Founder<br />Appwerx LLC</div>
+							<div class="panelist-alumni-badge">SUNY Oswego Alumni</div>
+						</div>
+					</div>
+					<p class="panelist-bio">
+						M. Behavioral and Decision Sciences, University of Pennsylvania,
+						2020. Since 2017 he has supported multiple Department of Defense
+						agencies, starting as a UX Research intern at the National
+						Geospatial-Intelligence Agency, then as a Strategy Researcher at
+						Booz Allen Hamilton. In 2025 he founded Appwerx LLC, a technical
+						consultancy serving nonprofits, government agencies, and small
+						businesses.
+					</p>
+				</div>
+			</div>
+
+			<!-- FORUM SUMMARY -->
+			<div style="margin-top: 56px">
+				<div class="section-label">Forum Summary</div>
+				<h3
+					style="
+						font-family: &quot;Syne&quot;, sans-serif;
+						font-size: 24px;
+						font-weight: 700;
+						color: var(--white);
+						margin-bottom: 24px;
+						letter-spacing: -0.01em;
+					">
+					What the panel discussed
+				</h3>
+				<p
+					style="
+						color: var(--text-dim);
+						font-size: 16px;
+						max-width: 780px;
+						line-height: 1.8;
+						margin-bottom: 32px;
+					">
+					Moderated by Dr. Adan Gomez, the forum centered on how a cognitive
+					science undergraduate degree translates into professional life across
+					very different fields. A common thread was that the degree's breadth
+					is both its greatest asset and its central challenge: graduates must
+					invest effort in identifying what specific direction they want to
+					pursue, but that same breadth opens doors that more specialized
+					degrees often cannot.
+				</p>
+			</div>
+
+			<div class="forum-summary">
+				<div class="forum-card">
+					<div class="forum-card-number">Topic 01</div>
+					<div class="forum-card-title">Choosing Graduate School</div>
+					<p class="forum-card-text">
+						Grace Roessling described navigating the transition from a broad
+						undergraduate degree to committing to a specific research
+						area&mdash;in her case, perception-action motor control at RPI. She
+						advised students to research the labs within prospective programs
+						and identify research they genuinely find interesting, rather than
+						optimizing for prestige. Rachel Simizon was drawn to human-computer
+						interaction as a natural application of cognitive science theory,
+						partly through her experience in a course on HCI at Oswego. The
+						panelists agreed that the decision made at graduation is not
+						permanent, and that adaptability&mdash;one of cognitive science's
+						gifts&mdash;makes course corrections possible.
+					</p>
+				</div>
+				<div class="forum-card">
+					<div class="forum-card-number">Topic 02</div>
+					<div class="forum-card-title">Research in Industry vs. Academia</div>
+					<p class="forum-card-text">
+						Rachel Simizon offered a candid comparison: industry UX research
+						operates under severe time and budget constraints, and studies that
+						would take months in academia are completed in two weeks with
+						minimal resources. The key skill becomes distilling findings into
+						brief, actionable communications&mdash;not lengthy reports. Charles
+						Christ echoed this, describing how his daily work involves
+						condensing complex technical and policy topics into three-bullet
+						memos for executive decision-makers. Both panelists noted that
+						advocating for the value of research within organizations is itself
+						a significant part of the job, often more demanding than the
+						research itself.
+					</p>
+				</div>
+				<div class="forum-card">
+					<div class="forum-card-number">Topic 03</div>
+					<div class="forum-card-title">Unexpected Career Paths</div>
+					<p class="forum-card-text">
+						Hunter Sutherland provided the panel's most striking example: a
+						cognitive science graduate who became a technology and space
+						attorney, advising semiconductor companies and publishing legal
+						scholarship on in-situ resource utilization. He emphasized that the
+						decision made at graduation does not define the trajectory of an
+						entire career. Kimberly Hinsch described resolving a tension between
+						technical and artistic interests by finding product design, which
+						she described as the intersection of both. She noted that technical
+						knowledge of front-end development and CS significantly helps her
+						communicate with engineers in her current role as design team lead.
+					</p>
+				</div>
+				<div class="forum-card">
+					<div class="forum-card-number">Topic 04</div>
+					<div class="forum-card-title">AI in the Workplace</div>
+					<p class="forum-card-text">
+						Kimberly Hinsch offered the most detailed account of AI's practical
+						impact on her field. She described AI as genuinely useful for rapid
+						UI prototyping and generating mock data for screenshots, but
+						unreliable for the deeper work of UX research: understanding
+						unarticulated user needs, mapping complex flows, and designing for
+						edge cases like permissions and settings. She warned against
+						"synthetic users"&mdash;AI simulating user behavior&mdash;arguing
+						that the value of real user research lies precisely in discovering
+						what you do not yet know, which AI trained on existing data cannot
+						replicate. She also described a significant organizational shift:
+						preparing design systems to be interpreted not only by human
+						designers and engineers but by AI agents acting as collaborators.
+					</p>
+				</div>
+				<div class="forum-card" style="grid-column: 1 / -1">
+					<div class="forum-card-number">Closing Advice</div>
+					<div class="forum-card-title">
+						What the Panelists Would Tell Their Undergraduate Selves
+					</div>
+					<p class="forum-card-text">
+						Across the panel, the advice converged on a few themes. First, the
+						breadth of cognitive science is a genuine advantage&mdash;it enables
+						panelists to move between domains, communicate across disciplinary
+						boundaries, and adapt to fields that did not exist when they
+						graduated. Second, developing multiple forms of writing is
+						essential: academic research writing, executive communication,
+						design documentation, and legal drafting all require distinct
+						skills, and cognitive science graduates have a foundation for all of
+						them. Third, following genuine intellectual interests, even when the
+						career application is not obvious, tends to lead to outcomes that
+						are both more satisfying and more surprising than planning for a
+						specific outcome. As Hunter Sutherland put it: "The decision you
+						make at graduation is not the last and only thing you'll do."
+					</p>
+				</div>
+			</div>
+		</section>
+
+		<!-- FOOTER -->
+		<footer>
+			<div class="footer-brand">
+				<div class="footer-logo-row">
+					<img
+						src="./M&M5.png"
+						alt="Minds & Machines"
+						onerror="this.style.display = 'none'" />
+					<div class="footer-brand-name">Minds <span>&amp;</span> Machines</div>
+				</div>
+				<p class="footer-desc">
+					The inaugural symposium on artificial intelligence and cognitive
+					science at SUNY Oswego. April 21, 2026.
+				</p>
+			</div>
+			<div class="footer-col">
+				<div class="footer-col-title">Contact</div>
+				<p>Adan Gomez, Ph.D.</p>
+				<p>Assistant Professor, Computer Science</p>
+				<p>SUNY Oswego</p>
+				<p>
+					<a href="mailto:adan.gomezsalgado@oswego.edu"
+						>adan.gomezsalgado@oswego.edu</a
+					>
+				</p>
+				<p>315-312-4060</p>
+			</div>
+			<div class="footer-col">
+				<div class="footer-col-title">Event</div>
+				<p>Tuesday, April 21, 2026</p>
+				<p>3:00 &ndash; 6:30 PM EDT</p>
+				<p>Park Hall 315</p>
+				<p>SUNY Oswego, Oswego, NY</p>
+				<p>Hybrid (In-person &amp; Virtual)</p>
+			</div>
+			<div class="footer-col">
+				<div class="footer-col-title">Institution</div>
+				<p><a href="https://www.oswego.edu" target="_blank">SUNY Oswego</a></p>
+				<p>State University of New York</p>
+				<p>Department of Computer Science</p>
+				<p>Cognitive Science Program</p>
+			</div>
+			<div class="footer-bottom">
+				<p>
+					Minds &amp; Machines 2026 &mdash; SUNY Oswego &mdash; Department of
+					Computer Science
+				</p>
+				<div class="footer-oswego">
+					<span>SUNY Oswego</span>
+				</div>
+			</div>
+		</footer>
+
+		<script>
+			// Smooth fade-in on scroll
+			const observer = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((e) => {
+						if (e.isIntersecting) {
+							e.target.style.opacity = "1";
+							e.target.style.transform = "translateY(0)";
+							observer.unobserve(e.target);
+						}
+					});
+				},
+				{ threshold: 0.08 },
+			);
+
+			document
+				.querySelectorAll(
+					".speaker-card, .panelist-card, .forum-card, .talk-block, .agenda-table tr",
+				)
+				.forEach((el) => {
+					el.style.opacity = "0";
+					el.style.transform = "translateY(20px)";
+					el.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+					observer.observe(el);
+				});
+		</script>
+	</body>
+</html>

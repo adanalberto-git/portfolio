@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Semantic Network &amp; Prolog Studio</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%234C6FFF'/%3E%3Ccircle cx='7' cy='7' r='2.6' fill='white'/%3E%3Ccircle cx='17' cy='7' r='2.6' fill='white'/%3E%3Ccircle cx='12' cy='17' r='2.6' fill='white'/%3E%3Cpath d='M9 8.5 15 15.5M15 8.5 9 15.5' stroke='white' stroke-width='1.6'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="vendor/codemirror/codemirror.css">
+<link rel="stylesheet" href="vendor/codemirror/theme/dracula.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ TOP BAR ============ -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M8.5 7.5 15.5 16"/><path d="M15.5 7.5 8.5 16"/></svg>
+      </span>
+      <span>Semantic Network &amp; Prolog Studio</span>
+    </div>
+
+    <nav class="tabs" id="main-tabs">
+      <button class="tab-btn active" data-view="network">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2.4"/><circle cx="19" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7 7l9 9M17 7l-9 9"/></svg>
+        <span data-i18n="topbar.tabNetwork">Diseñador de Redes</span>
+      </button>
+      <button class="tab-btn" data-view="ide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        <span data-i18n="topbar.tabIde">Editor Prolog</span>
+      </button>
+      <button class="tab-btn" data-view="help">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2-3 4"/><circle cx="12" cy="17" r=".3" fill="currentColor"/></svg>
+        <span data-i18n="topbar.tabHelp">Ayuda</span>
+      </button>
+    </nav>
+
+    <div class="topbar-spacer"></div>
+
+    <div class="topbar-actions">
+      <div class="seg-control lang-switch" id="lang-switch" title="Español / English">
+        <button type="button" data-lang="es">ES</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <span class="badge-autosave" id="autosave-badge"><span class="dot"></span> <span data-i18n="topbar.autosaved">Guardado automático</span></span>
+      <button class="btn btn-primary btn-sm" id="btn-send-to-ide" data-i18n-title="topbar.sendToIdeTitle" title="Genera el código Prolog de tu red y ábrelo en el Editor Prolog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        <span data-i18n="topbar.sendToIde">Enviar a Prolog</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============ VIEW: NETWORK DESIGNER ============ -->
+  <main class="view active" id="view-network">
+
+    <!-- left tool rail -->
+    <div class="net-toolbar" id="net-toolbar">
+      <button class="tool-btn active" data-tool="select" data-i18n-title="toolbar.moveTitle" title="Seleccionar y mover (V)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3l7 18 2.5-7.5L21 11 4 3z"/></svg>
+        <span data-i18n="toolbar.move">Mover</span>
+      </button>
+      <button class="tool-btn" data-tool="add-node" data-i18n-title="toolbar.nodeTitle" title="Agregar nodo (N)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="10" rx="3"/><path d="M12 10v4M10 12h4"/></svg>
+        <span data-i18n="toolbar.node">Nodo</span>
+      </button>
+      <button class="tool-btn" data-tool="link" data-i18n-title="toolbar.linkTitle" title="Crear enlace (L)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="19" r="2.3"/><circle cx="19" cy="5" r="2.3"/><path d="M7 17.5 17 6.5"/></svg>
+        <span data-i18n="toolbar.link">Enlace</span>
+      </button>
+      <button class="tool-btn" data-tool="pan" data-i18n-title="toolbar.panTitle" title="Desplazar el lienzo (Espacio)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M12 22v-6M2 12h6M22 12h-6M12 12l-5-5M12 12l5-5M12 12l-5 5M12 12l5 5"/></svg>
+        <span data-i18n="toolbar.pan">Mano</span>
+      </button>
+      <div class="tool-sep"></div>
+      <button class="tool-btn" id="tool-delete" data-i18n-title="toolbar.deleteTitle" title="Eliminar seleccionado (Supr)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        <span data-i18n="toolbar.delete">Borrar</span>
+      </button>
+      <button class="tool-btn" id="tool-undo" data-i18n-title="toolbar.undoTitle" title="Deshacer (Ctrl+Z)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h10a5 5 0 0 1 0 10h-2"/><polyline points="7 5 3 10 7 15"/></svg>
+        <span data-i18n="toolbar.undo">Deshacer</span>
+      </button>
+      <button class="tool-btn" id="tool-redo" data-i18n-title="toolbar.redoTitle" title="Rehacer (Ctrl+Y)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10H11a5 5 0 0 0 0 10h2"/><polyline points="17 5 21 10 17 15"/></svg>
+        <span data-i18n="toolbar.redo">Rehacer</span>
+      </button>
+      <div class="tool-sep"></div>
+      <button class="tool-btn" id="tool-rules" data-i18n-title="toolbar.rulesTitle" title="Abrir el constructor de reglas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4"/><path d="M14 3h7v7"/><path d="M10 14 21 3"/></svg>
+        <span data-i18n="toolbar.rules">Reglas</span>
+      </button>
+      <button class="tool-btn" id="tool-new" data-i18n-title="toolbar.newNetTitle" title="Nueva red">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 11v6M9 14h6"/></svg>
+        <span data-i18n="toolbar.newNet">Nueva</span>
+      </button>
+      <div class="tool-sep"></div>
+      <button class="tool-btn" id="tool-export-json" data-i18n-title="toolbar.jsonTitle" title="Descargar red como JSON">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><polyline points="7 10 12 15 17 10"/><path d="M5 19h14"/></svg>
+        <span data-i18n="toolbar.json">JSON</span>
+      </button>
+      <button class="tool-btn" id="tool-import-json" data-i18n-title="toolbar.importTitle" title="Importar red desde JSON">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><polyline points="7 8 12 3 17 8"/><path d="M5 19h14"/></svg>
+        <span data-i18n="toolbar.importBtn">Importar</span>
+      </button>
+      <button class="tool-btn" id="tool-export-png" data-i18n-title="toolbar.imageTitle" title="Descargar red como imagen PNG">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span data-i18n="toolbar.image">Imagen</span>
+      </button>
+      <input type="file" id="file-import-json" accept=".json,application/json" class="sr-only">
+    </div>
+
+    <!-- canvas -->
+    <div class="net-canvas-wrap" id="net-canvas-wrap">
+      <svg id="network-svg" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow-head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="context-stroke"></path>
+          </marker>
+        </defs>
+        <g id="viewport">
+          <g id="edges-layer"></g>
+          <g id="nodes-layer"></g>
+        </g>
+      </svg>
+      <div class="net-empty-hint" id="net-empty-hint">
+        <div>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:10px"><circle cx="5" cy="6" r="2.4"/><circle cx="19" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7 7l9 9M17 7l-9 9"/></svg>
+          <div><strong data-i18n="canvas.emptyTitle">Tu lienzo está vacío.</strong><br><span data-i18n-html="canvas.emptyBodyHtml">Elige la herramienta <b>Nodo</b> y haz clic en el lienzo para crear tu primer concepto. Luego usa <b>Enlace</b> para conectarlos.</span></div>
+        </div>
+      </div>
+      <div class="zoom-controls">
+        <button id="zoom-in" data-i18n-title="canvas.zoomIn" title="Acercar">+</button>
+        <button id="zoom-reset" data-i18n-title="canvas.zoomReset" title="Ajustar a la pantalla">⤢</button>
+        <button id="zoom-out" data-i18n-title="canvas.zoomOut" title="Alejar">−</button>
+      </div>
+    </div>
+
+    <!-- right inspector -->
+    <aside class="net-inspector" id="net-inspector">
+      <div id="inspector-content">
+        <div class="empty-inspector" data-i18n-html="inspector.emptyHtml">
+          Selecciona un nodo o un enlace para ver y editar sus propiedades aquí, o abre el constructor de <b>Reglas</b> desde la barra de herramientas.
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ============ VIEW: PROLOG IDE ============ -->
+  <main class="view" id="view-ide">
+    <div class="ide-sidebar">
+      <div class="ide-sidebar-section">
+        <button class="ide-side-btn" id="ide-new">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span data-i18n="ide.newFile">Nuevo archivo</span>
+        </button>
+        <button class="ide-side-btn" id="ide-open">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          <span data-i18n="ide.openImport">Abrir / Importar .pl</span>
+        </button>
+        <button class="ide-side-btn" id="ide-export">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><path d="M12 15V3"/></svg>
+          <span data-i18n="ide.exportBtn">Exportar .pl</span>
+        </button>
+        <input type="file" id="ide-file-input" accept=".pl,.pro,.prolog,.txt" class="sr-only">
+      </div>
+      <h4 data-i18n="ide.filesInSession">Archivos de esta sesión</h4>
+      <div class="ide-file-list" id="ide-file-list"></div>
+    </div>
+
+    <div class="ide-main">
+      <div class="ide-editor-toolbar">
+        <span class="ide-filename" id="ide-filename">sin-titulo.pl</span>
+        <span class="ide-dirty-dot" id="ide-dirty-dot" data-i18n-title="ide.unsavedTitle" title="Cambios sin guardar"></span>
+        <div class="topbar-spacer"></div>
+        <button class="btn btn-ghost btn-sm" id="ide-format-hint" data-i18n-title="ide.syntaxHintTitle" title="Consejo: usa % para comentarios">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2-3 4"/><circle cx="12" cy="17" r=".3" fill="currentColor"/></svg>
+          <span data-i18n="ide.syntaxHint">Sintaxis</span>
+        </button>
+        <button class="btn btn-primary btn-sm" id="ide-consult">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <span data-i18n="ide.consult">Consultar programa</span>
+        </button>
+      </div>
+
+      <div class="ide-editor-wrap">
+        <textarea id="prolog-editor"></textarea>
+      </div>
+
+      <div class="ide-console">
+        <div class="ide-console-header">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          <span data-i18n="ide.consoleTitle">Consola de consultas</span>
+          <div class="topbar-spacer"></div>
+          <button class="btn btn-ghost btn-sm" id="ide-clear-console" style="color:#8291a8" data-i18n="ide.clear">Limpiar</button>
+        </div>
+        <div class="ide-query-bar">
+          <span class="prompt">?-</span>
+          <input type="text" class="ide-query-input" id="ide-query-input" data-i18n-placeholder="ide.queryPlaceholder" placeholder="escribe una consulta, p. ej. under(violin, instruments)." spellcheck="false" autocomplete="off">
+          <button class="btn btn-primary btn-sm" id="ide-run-query" data-i18n="ide.run">Ejecutar</button>
+        </div>
+        <div class="ide-results" id="ide-results"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ VIEW: HELP ============ -->
+  <main class="view" id="view-help">
+    <div class="help-wrap">
+      <div class="help-hero">
+        <h1 data-i18n="help.heroTitle">Centro de ayuda</h1>
+        <p data-i18n="help.heroSubtitle">Guía rápida de cada herramienta de Semantic Network &amp; Prolog Studio.</p>
+      </div>
+
+      <div class="help-nav">
+        <a href="#help-nodos" data-i18n="help.nav.nodes">Nodos</a>
+        <a href="#help-enlaces" data-i18n="help.nav.links">Enlaces</a>
+        <a href="#help-reglas" data-i18n="help.nav.rules">Reglas</a>
+        <a href="#help-exportar" data-i18n="help.nav.exportImport">Exportar e importar</a>
+        <a href="#help-ide" data-i18n="help.nav.ide">Editor Prolog</a>
+        <a href="#help-consultas" data-i18n="help.nav.queries">Consultas</a>
+        <a href="#help-atajos" data-i18n="help.nav.shortcuts">Atajos de teclado</a>
+      </div>
+
+      <div class="help-card" id="help-nodos">
+        <h2><span class="icn" style="background:var(--brand-500)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="7" width="18" height="10" rx="3"/></svg>
+        </span><span data-i18n="help.nodes.title">Crear y editar nodos</span></h2>
+        <div data-i18n-html="help.nodes.bodyHtml">
+        <ol class="help-step-list">
+          <li>Haz clic en la herramienta <b>Nodo</b> en la barra izquierda (o presiona <span class="help-kbd">N</span>).</li>
+          <li>Haz clic en cualquier parte vacía del lienzo para crear un nodo nuevo ahí mismo.</li>
+          <li>Escribe el nombre del concepto (por ejemplo <code>perro</code>) y presiona <span class="help-kbd">Enter</span>.</li>
+          <li>Para mover un nodo, cambia a la herramienta <b>Mover</b> (<span class="help-kbd">V</span>) y arrástralo con el mouse.</li>
+          <li>Para renombrar un nodo, haz doble clic sobre él.</li>
+          <li>Para borrar un nodo (y todos sus enlaces), selecciónalo y presiona <span class="help-kbd">Supr</span> o usa el botón <b>Borrar</b>.</li>
+        </ol>
+        </div>
+      </div>
+
+      <div class="help-card" id="help-enlaces">
+        <h2><span class="icn" style="background:var(--accent-teal)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="5" cy="19" r="2.3"/><circle cx="19" cy="5" r="2.3"/><path d="M7 17.5 17 6.5"/></svg>
+        </span><span data-i18n="help.links.title">Crear enlaces entre conceptos</span></h2>
+        <div data-i18n-html="help.links.bodyHtml">
+        <p>Un enlace representa una relación entre dos nodos (por ejemplo, "es un", "forma parte de" o cualquier relación que tú definas). Cada enlace se convierte directamente en un hecho de Prolog.</p>
+        <ol class="help-step-list">
+          <li>Elige la herramienta <b>Enlace</b> (<span class="help-kbd">L</span>).</li>
+          <li>Haz clic en el nodo de origen y después en el nodo de destino.</li>
+          <li>En el panel derecho, elige una relación de la lista (<code>is_a</code>, <code>part_of</code>, <code>related_to</code>, <code>causes</code>, <code>precedes</code>, <code>instance_of</code>, <code>has_property</code>, <code>same_as</code>) o escribe tu propia relación personalizada en el campo de texto.</li>
+          <li>También puedes elegir si la flecha es de un solo sentido o de doble sentido, el estilo de línea (sólida, discontinua, punteada) y el color.</li>
+          <li>Para seleccionar un enlace ya creado, haz clic sobre la línea o su etiqueta.</li>
+        </ol>
+        <p>El nombre de la relación se usa como el nombre del predicado en Prolog. Si escribes una relación personalizada con mayúsculas, espacios o símbolos, el programa la convertirá automáticamente en un átomo válido de Prolog (entre comillas si hace falta), sin cambiar lo que ves en el diagrama.</p>
+        </div>
+      </div>
+
+      <div class="help-card" id="help-reglas">
+        <h2><span class="icn" style="background:var(--accent-violet)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4"/><path d="M14 3h7v7"/><path d="M10 14 21 3"/></svg>
+        </span><span data-i18n="help.rules.title">Construir reglas (sin escribir Prolog a mano)</span></h2>
+        <div data-i18n-html="help.rules.bodyHtml">
+        <p>Las reglas te permiten definir nuevas relaciones derivadas, como "todo lo que está bajo una categoría" o "dos elementos en la misma rama", usando solo menús y botones.</p>
+        <ol class="help-step-list">
+          <li>Haz clic en <b>Reglas</b> en la barra de herramientas para abrir el constructor.</li>
+          <li>Haz clic en <b>+ Nueva regla</b>.</li>
+          <li>Define la <b>cabeza</b> de la regla: el nombre de la nueva relación (por ejemplo <code>bajo_categoria</code>) y sus variables (por ejemplo <code>X, Y</code>).</li>
+          <li>Agrega <b>condiciones</b> al <b>cuerpo</b> de la regla con el botón <b>+ Agregar condición</b>. Cada condición puede ser una relación existente (incluida la misma regla, para crear recursión), o una comparación como <code>X \= Y</code>.</li>
+          <li>Activa el botón <code>\+</code> junto a una condición si quieres negarla (que NO se cumpla).</li>
+          <li>El programa muestra abajo una vista previa en vivo del código Prolog que se va a generar.</li>
+        </ol>
+        <p>Ejemplo: una regla con cabeza <code>under(X, Y)</code> y dos condiciones alternativas (<code>is_a(X, Y)</code>, y <code>is_a(X, Z)</code> seguido de <code>under(Z, Y)</code> de forma recursiva) genera exactamente el patrón de "todo lo que está debajo de una categoría" usado en clase.</p>
+        </div>
+      </div>
+
+      <div class="help-card" id="help-exportar">
+        <h2><span class="icn" style="background:var(--accent-amber)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 3v12"/><polyline points="7 10 12 15 17 10"/><path d="M5 19h14"/></svg>
+        </span><span data-i18n="help.exportImport.title">Exportar e importar tu trabajo</span></h2>
+        <div data-i18n-html="help.exportImport.bodyHtml">
+        <ul>
+          <li><b>JSON</b>: guarda toda tu red (nodos, enlaces y reglas) en un archivo <code>.json</code> que puedes volver a abrir después con el botón <b>Importar</b>, o compartir con tu profesor.</li>
+          <li><b>Imagen (PNG)</b>: descarga tu red tal como se ve en el lienzo, lista para pegar en un documento o presentación.</li>
+          <li><b>Enviar a Prolog</b>: convierte tu red y tus reglas en código Prolog real y lo abre automáticamente en el Editor Prolog, como un archivo nuevo.</li>
+        </ul>
+        </div>
+      </div>
+
+      <div class="help-card" id="help-ide">
+        <h2><span class="icn" style="background:var(--ink-700)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </span><span data-i18n="help.ide.title">El Editor Prolog</span></h2>
+        <div data-i18n-html="help.ide.bodyHtml">
+        <p>Funciona de forma parecida a SWISH: un editor de código a la izquierda/arriba y una consola de consultas abajo. Todo se ejecuta dentro de tu navegador, no necesitas instalar nada.</p>
+        <ul>
+          <li><b>Nuevo archivo</b>: abre una pestaña en blanco.</li>
+          <li><b>Abrir / Importar</b>: carga un archivo <code>.pl</code> desde tu computadora.</li>
+          <li><b>Exportar</b>: descarga el contenido actual del editor como un archivo <code>.pl</code>.</li>
+          <li><b>Consultar programa</b>: carga (consulta) tu código en el motor de Prolog, para poder hacer preguntas sobre él.</li>
+          <li>Puedes tener varios archivos abiertos a la vez; aparecen en la lista de la izquierda.</li>
+        </ul>
+        </div>
+      </div>
+
+      <div class="help-card" id="help-consultas">
+        <h2><span class="icn" style="background:var(--accent-rose)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        </span><span data-i18n="help.queries.title">Escribir y ejecutar consultas</span></h2>
+        <div data-i18n-html="help.queries.bodyHtml">
+        <ol class="help-step-list">
+          <li>Primero presiona <b>Consultar programa</b> para cargar tu código.</li>
+          <li>Escribe una pregunta en la barra <code>?-</code>, por ejemplo <code>is_a(violin, bowed)</code>, y presiona <b>Ejecutar</b> o <span class="help-kbd">Enter</span>.</li>
+          <li>Si la consulta tiene variables (por ejemplo <code>is_a(X, bowed)</code>), verás el valor encontrado para cada variable.</li>
+          <li>Si hay más de una respuesta posible, aparecerá un botón <b>Siguiente solución ;</b> para pedir la próxima, igual que escribir <code>;</code> en Prolog normal.</li>
+          <li>Si la consulta es simplemente verdadera o falsa (sin variables), verás <code>true.</code> o <code>false.</code></li>
+        </ol>
+        </div>
+      </div>
+
+      <div class="help-card" id="help-atajos">
+        <h2><span class="icn" style="background:var(--brand-600)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M8 16h8"/></svg>
+        </span><span data-i18n="help.shortcuts.title">Atajos de teclado (Diseñador de Redes)</span></h2>
+        <div data-i18n-html="help.shortcuts.bodyHtml">
+        <ul>
+          <li><span class="help-kbd">V</span> — herramienta Mover</li>
+          <li><span class="help-kbd">N</span> — herramienta Nodo</li>
+          <li><span class="help-kbd">L</span> — herramienta Enlace</li>
+          <li><span class="help-kbd">Espacio</span> (mantener) — desplazar el lienzo temporalmente</li>
+          <li><span class="help-kbd">Supr</span> / <span class="help-kbd">Backspace</span> — borrar lo seleccionado</li>
+          <li><span class="help-kbd">Ctrl</span>+<span class="help-kbd">Z</span> — deshacer</li>
+          <li><span class="help-kbd">Ctrl</span>+<span class="help-kbd">Y</span> — rehacer</li>
+          <li>Rueda del mouse — acercar / alejar</li>
+        </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<!-- Rename / text prompt modal -->
+<div class="modal-overlay hidden" id="prompt-modal">
+  <div class="modal-box">
+    <h3 id="prompt-modal-title">Nombre del nodo</h3>
+    <p id="prompt-modal-desc"></p>
+    <div class="field"><input type="text" id="prompt-modal-input" autocomplete="off"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" id="prompt-modal-cancel" data-i18n="modal.cancel">Cancelar</button>
+      <button class="btn btn-primary btn-sm" id="prompt-modal-ok" data-i18n="modal.accept">Aceptar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm modal -->
+<div class="modal-overlay hidden" id="confirm-modal">
+  <div class="modal-box">
+    <h3 id="confirm-modal-title">¿Confirmar?</h3>
+    <p id="confirm-modal-desc"></p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" id="confirm-modal-cancel" data-i18n="modal.cancel">Cancelar</button>
+      <button class="btn btn-danger btn-sm" id="confirm-modal-ok" data-i18n="modal.yesContinue">Sí, continuar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toast-stack"></div>
+
+<!-- ============ VENDOR LIBRARIES ============ -->
+<script src="vendor/codemirror/codemirror.js"></script>
+<script src="vendor/codemirror/simple.js"></script>
+<script src="vendor/codemirror/matchbrackets.js"></script>
+<script src="vendor/codemirror/placeholder.js"></script>
+<script src="vendor/tau-prolog.js"></script>
+<script src="vendor/tau-prolog-lists.js"></script>
+
+<!-- ============ APP MODULES ============ -->
+<script src="js/i18n.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/state.js"></script>
+<script src="js/network-editor.js"></script>
+<script src="js/rule-builder.js"></script>
+<script src="js/prolog-generator.js"></script>
+<script src="js/prolog-mode.js"></script>
+<script src="js/prolog-ide.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

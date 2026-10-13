@@ -1,0 +1,2204 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Purpose Garden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#0d1917; --panel:#152624; --panel-2:#1b312e; --line:#2a433e; --line-2:#3a5c53;
+  --text:#e8f1ec; --muted:#a3bbb0; --ink:#0f201c;
+  --survive:#f2725f; --flourish:#f3bf42; --connect:#43cbc0; --accent:#f3bf42;
+  --good:#7bd88f; --warn:#ff8a73;
+  --spring:#8fd18a; --summer:#f3bf42; --autumn:#e58a4a; --winter:#9cc6f0;
+  --display:'Bricolage Grotesque','Avenir Next','Segoe UI',system-ui,sans-serif;
+  --body:'Figtree','Segoe UI',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{color-scheme:dark}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15px;line-height:1.5;margin:0}
+.app{max-width:1240px;margin:0 auto;padding-inline:16px;padding-block:20px 44px}
+.head-row{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,4.6vw,40px);line-height:1.05;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.lede{margin:4px 0 14px;max-width:64ch;color:var(--muted);font-size:16px}
+h2{margin:0;font-family:var(--display);font-size:18px;font-weight:700;letter-spacing:-.005em}
+.h{font-family:var(--display);font-size:12.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0}
+button,select{font:inherit;color:var(--text)}
+.btn{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:500;line-height:1.2}
+.btn:hover{border-color:var(--line-2)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--ink);font-weight:600;padding:10px 18px;font-size:16px}
+.btn.ghost{background:transparent}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn[aria-pressed="true"]{background:var(--accent);color:var(--ink);border-color:var(--accent)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg .btn{border:0;border-radius:0;border-right:1px solid var(--line)}
+.seg .btn:last-child{border-right:0}
+.spacer{flex:1}
+.mono{font-family:var(--mono)}
+
+
+/* ---- game screen ---- */
+.app{max-width:1240px;margin:0 auto;padding-inline:16px;padding-block:12px 24px;display:grid;gap:12px}
+.hud{display:grid;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:10px 14px 12px}
+.hud-a{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.hud-a h1{font-size:24px}
+.hud-ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-left:auto}
+.hud-b{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1.25fr) auto;gap:10px 22px;align-items:end}
+.hud-b p.h{margin-bottom:5px}
+.goal{margin:0;font-size:13.5px;color:var(--muted);max-width:110ch}
+.goal b{color:var(--text);font-weight:600}
+.year{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.ys{position:relative;border-radius:6px;background:#0b1512;overflow:hidden;padding:4px 6px 7px;font-size:11.5px;color:var(--muted);border:1px solid transparent;line-height:1.25}
+.ys i{position:absolute;left:0;bottom:0;height:4px;background:var(--c);width:0}
+.ys.now{border-color:var(--c);color:var(--text)}
+.ys b{display:block;font-family:var(--display);font-weight:600;font-size:12.5px;letter-spacing:.02em}
+.ystat{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:5px;font-size:12.5px;color:var(--muted)}
+.ystat b{color:var(--text);font-weight:600}
+.scorerow{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px}
+.dots{display:inline-flex;gap:5px;vertical-align:middle;margin-right:6px}
+.dots span{width:11px;height:11px;border-radius:50%;background:#0b1512;border:2px solid var(--line-2)}
+.dots span.on{background:var(--good);border-color:var(--good)}
+.scorebar{position:relative;height:12px;border-radius:6px;background:#0b1512;margin:8px 0 17px}
+.scorebar i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:linear-gradient(90deg,#5aa87a,var(--good));width:0}
+.scorebar .cut{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--line-2)}
+.scorebar .cut span{position:absolute;top:16px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--muted);white-space:nowrap}
+.scorebar .cut.hit{background:var(--accent)}
+.scorebar .cut.hit span{color:var(--accent)}
+.bignum{font-family:var(--display);font-size:26px;font-weight:700;line-height:1}
+.effort{display:grid;gap:5px;justify-items:start;font-size:12.5px;color:var(--muted)}
+.pips{display:inline-flex;gap:4px;margin-right:6px}
+.pips span{width:13px;height:13px;border-radius:50%;border:2px solid var(--line-2);background:transparent}
+.pips span.on{background:var(--accent);border-color:var(--accent)}
+.head-btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.lvl-sub{display:block;font-size:11px;font-weight:500;opacity:.85}
+.head-btns .seg .btn{padding:5px 12px;text-align:left}
+
+.play{display:grid;grid-template-columns:132px minmax(0,600px);gap:14px;justify-content:center;align-items:start}
+.stage{position:relative}
+.canvas-wrap{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px var(--line-2),0 22px 44px -20px #000}
+canvas#garden{display:block;width:100%;height:auto;aspect-ratio:1;background:#cbd9b8;touch-action:manipulation}
+#toast{position:absolute;left:12px;right:12px;top:12px;background:rgba(13,25,23,.93);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px;pointer-events:none;opacity:0;transform:translateY(-6px);transition:opacity .25s,transform .25s}
+#toast.show{opacity:1;transform:none}
+#toast b{color:var(--accent)}
+.tick{position:absolute;right:10px;bottom:9px;font-family:var(--mono);font-size:11.5px;color:#eaf3ee;background:rgba(13,25,23,.72);border-radius:6px;padding:2px 8px;pointer-events:none}
+
+/* roster of creatures */
+.roster{display:flex;flex-direction:column;gap:8px}
+.pchip{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 8px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 10px;cursor:pointer;text-align:left;width:100%}
+.pchip:hover{border-color:var(--line-2)}
+.pchip.low{border-color:#8a4a40}
+.pchip.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.pchip .nm{font-family:var(--display);font-weight:700;font-size:15.5px;line-height:1.1}
+.pchip .st{grid-column:1/-1;font-size:11.5px;color:var(--muted);line-height:1.2}
+.pchip .st.low{color:var(--warn)}
+.pchip .st.ok{color:var(--good)}
+.pchip .st.sleep{color:#c8b6ff}
+.mini{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.mini i{display:block;height:6px;border-radius:3px;background:#0b1512;position:relative;overflow:hidden}
+.mini i b{display:block;height:100%;width:0;background:var(--c)}
+.mini i.low b{background:var(--warn)}
+.mini i::after{content:'';position:absolute;left:30%;top:0;bottom:0;width:1px;background:rgba(232,241,236,.55)}
+
+/* dock: tools, effort, buttons */
+.dock{display:grid;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:10px 12px}
+.dock-row{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:center}
+.toolrow{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+.tool{display:grid;justify-items:center;gap:2px;width:68px;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:6px 3px 5px;cursor:pointer;text-align:center}
+.tool:hover{border-color:var(--line-2)}
+.tool svg{width:32px;height:32px;display:block}
+.tool .tn{font-weight:600;font-size:12.5px;line-height:1.1}
+.tool .tc{font-size:10.5px;color:var(--muted);line-height:1.1}
+.tool[aria-pressed="true"]{border-color:var(--accent);background:#2a3a2a;box-shadow:0 0 0 1px var(--accent)}
+.tool[aria-pressed="true"] .tc{color:var(--accent)}
+.vr{width:1px;align-self:stretch;background:var(--line);min-height:44px}
+.menurow{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+.mbtn{position:relative;display:grid;justify-items:center;gap:2px;width:84px;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:6px 4px 5px;cursor:pointer;text-align:center;font-weight:600;font-size:12.5px;line-height:1.1}
+.mbtn:hover{border-color:var(--line-2)}
+.mbtn svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;color:var(--accent)}
+.mbtn[aria-expanded="true"]{border-color:var(--accent);background:#2a3a2a}
+.badge{position:absolute;top:-7px;right:-6px;min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:var(--warn);color:var(--ink);font-size:11.5px;font-weight:700;display:grid;place-items:center;border:2px solid var(--panel)}
+.hint{position:absolute;left:10px;bottom:9px;max-width:calc(100% - 150px);margin:0;color:#eaf3ee;font-size:13px;line-height:1.35;background:rgba(13,25,23,.9);border:1px solid var(--line-2);border-radius:10px;padding:6px 10px;pointer-events:none}
+.hint.warn{color:var(--warn);border-color:var(--warn)}
+@media (max-width:700px){.hint{max-width:calc(100% - 20px);bottom:34px}}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(243,191,66,.75)}70%{box-shadow:0 0 0 11px rgba(243,191,66,0)}100%{box-shadow:0 0 0 0 rgba(243,191,66,0)}}
+@keyframes pingw{0%{box-shadow:0 0 0 0 rgba(255,138,115,.6)}70%{box-shadow:0 0 0 9px rgba(255,138,115,0)}100%{box-shadow:0 0 0 0 rgba(255,138,115,0)}}
+.attn{animation:ping 1.5s ease-out infinite;border-color:var(--accent)!important}
+.pchip.attn{animation-name:pingw;border-color:var(--warn)!important}
+
+/* drawer: the detail views */
+.drawer{position:fixed;z-index:40;right:0;top:0;bottom:0;width:min(452px,100vw);background:var(--bg);border-left:1px solid var(--line-2);box-shadow:-26px 0 60px -22px #000;display:grid;grid-template-rows:auto minmax(0,1fr);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.drawer-head{display:grid;gap:8px;padding:12px 14px 10px;border-bottom:1px solid var(--line);background:var(--panel)}
+.drawer-top{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.drawer-top h2{font-size:19px}
+.drawer-top .btn{padding:5px 11px}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.tab{flex:none;background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+.pausetog{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);cursor:pointer}
+.drawer-body{overflow:auto;padding:12px 14px 22px;display:grid;gap:12px;align-content:start}
+.drawer .drawer-body>*{display:none}
+.drawer[data-view="wants"] #cards,.drawer[data-view="book"] #habits,.drawer[data-view="mind"] #mind,.drawer[data-view="notebook"] #notebook,.drawer[data-view="story"] #story{display:grid}
+#cards .card:not(.sel){display:none}
+#cards{gap:0}
+#cards .card{cursor:default}
+svg.net{width:100%;height:auto;display:block;background:#0f201d;border-radius:10px}
+svg.net text{font-family:var(--body);fill:var(--text)}
+svg.net .cap{fill:var(--muted);font-size:9.5px;letter-spacing:.06em;font-family:var(--display);font-weight:600}
+@media (max-width:860px){
+  .play{grid-template-columns:minmax(0,1fr)}
+  .roster{flex-direction:row;overflow-x:auto;padding:4px 2px 8px;margin-bottom:-4px}
+  .pchip{flex:none;width:128px}
+  .hud-b{grid-template-columns:minmax(0,1fr) auto}
+  .hud-b>div:first-child{grid-column:1/-1}
+}
+@media (max-width:700px){
+  .drawer{top:auto;left:0;right:0;width:auto;height:70dvh;border-left:0;border-top:1px solid var(--line-2);border-radius:18px 18px 0 0;box-shadow:0 -26px 60px -22px #000}
+  .hud-ctl{margin-left:0}
+  .tool{width:60px}.tool .tc{display:none}.tool svg{width:28px;height:28px}
+  .mbtn{width:74px;font-size:12px}
+  .mrow{grid-template-columns:20px minmax(0,92px) minmax(0,1fr) 32px}
+  .vr{display:none}
+}
+@media (prefers-reduced-motion:reduce){#toast{transition:none}.attn{animation:none;box-shadow:0 0 0 3px var(--accent)}.pchip.attn{box-shadow:0 0 0 3px var(--warn)}}
+/* creature cards */
+.side{display:grid;gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:9px;cursor:pointer}
+.card.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.card-top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.glyph{width:20px;height:20px;background:var(--gc);border:2px solid #0b1512;flex:none}
+.glyph.finn{border-radius:50%}.glyph.mira{border-radius:6px}.glyph.bo{border-radius:10px;height:26px;width:17px}
+.glyph.luna{border-radius:9px 9px 12px 12px;clip-path:polygon(0 22%,18% 0,34% 20%,66% 20%,82% 0,100% 22%,100% 100%,0 100%);border:0}.glyph.ori{border-radius:50% 50% 50% 4px;transform:rotate(-45deg);width:17px;height:17px}
+.name{font-family:var(--display);font-size:19px;font-weight:700;letter-spacing:-.01em}
+.trait{color:var(--muted);font-size:13px}
+.status{margin-left:auto;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:600;border:1px solid var(--line-2);color:var(--muted)}
+.status.ok{color:var(--ink);background:var(--good);border-color:var(--good)}
+.status.low{color:var(--ink);background:var(--warn);border-color:var(--warn)}
+.status.sleep{color:#c8b6ff;border-color:#4d4477}
+.mrow{display:grid;grid-template-columns:20px minmax(0,104px) minmax(0,1fr) 34px;align-items:center;gap:8px;font-size:13px}
+.mrow .lb{font-weight:500;line-height:1.15}
+.mrow .lb small{display:block;font-size:10px;letter-spacing:.07em;color:var(--muted);font-family:var(--display);font-weight:600}
+.sw{display:inline-block;width:16px;height:16px;border-radius:50%;border:3px solid var(--c);flex:none}
+.sw.s-flourish{border-style:dotted}
+.sw.s-connect{border-style:double;border-width:5px}
+.track{position:relative;height:10px;border-radius:5px;background:#0b1512;overflow:visible}
+.track b{display:block;height:100%;width:0;background:var(--c);border-radius:5px}
+.track .line{position:absolute;left:30%;top:-3px;bottom:-3px;width:2px;background:rgba(232,241,236,.55)}
+.mrow.low .track b{background:var(--warn)}
+.mrow.low .v{color:var(--warn);font-weight:600}
+.mrow .v{font-family:var(--mono);text-align:right;color:var(--muted);font-size:12px}
+.mrow.top .lb{font-weight:600}
+.mrow.top .v{color:var(--text)}
+.doing{font-size:13.5px;color:var(--text)}
+.doing .mono{font-size:12px;color:var(--muted)}
+.more{display:grid;gap:8px;border-top:1px solid var(--line);padding-top:10px}
+.more .why{margin:0;font-size:14px}
+.more .help{margin:0;font-size:13px;color:var(--muted)}
+.more .help b{color:var(--text)}
+.cap{margin:0;font-size:12.5px;color:var(--muted)}
+.chip{display:inline-block;border-radius:999px;padding:1px 9px;font-size:11.5px;font-weight:600;letter-spacing:.03em;border:1px solid var(--line-2);color:var(--muted);white-space:nowrap}
+.chip.t-Noticed{color:#f3bf42;border-color:#7a6224}
+.chip.t-Turned{color:#43cbc0;border-color:#22645f}
+.chip.t-Self{color:var(--ink);background:var(--accent);border-color:var(--accent)}
+.chip.t-Learned{color:#9bd07a;border-color:#3f6a2c}
+.chip.t-Slept{color:#c8b6ff;border-color:#4d4477}
+.chip.t-Woke{color:var(--muted)}
+.chip.t-Garden{color:#9cc6f0;border-color:#345a7a}
+.chip.t-You{color:var(--text);border-color:var(--line-2)}
+.chip.t-Habit{color:var(--ink);background:#9bd07a;border-color:#9bd07a}
+.chip.t-Dropped{color:#ff8a73;border-color:#7a3a30}
+.chip.new{color:var(--ink);background:#9bd07a;border-color:#9bd07a;margin-left:4px}
+
+/* panels */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:11px}
+.panel-head{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;justify-content:space-between}
+.sub{color:var(--muted);font-size:13px}
+ul.advice{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+ul.advice li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px 10px;align-items:start;padding:9px 10px;border-radius:10px;background:var(--panel-2);border:1px solid var(--line)}
+ul.advice .d{width:12px;height:12px;margin-top:5px;background:var(--gc);border-radius:50%}
+ul.advice .d.mira{border-radius:3px}ul.advice .d.bo{border-radius:5px;height:15px;margin-top:3px}ul.advice .d.luna{border-radius:3px 3px 6px 6px}ul.advice .d.ori{border-radius:50% 50% 50% 2px}
+ul.advice .tx{font-size:14px}
+ul.advice .pr{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:1px}
+ul.advice .pr.now{color:var(--warn)}
+ul.advice .btn{padding:5px 10px;font-size:13px;align-self:center}
+.allgood{color:var(--muted);font-size:14px}
+.key{display:grid;grid-template-columns:auto minmax(0,1fr);gap:5px 10px;align-items:baseline;font-size:12.5px;color:var(--muted);padding:9px 10px;background:var(--panel-2);border-radius:10px;border:1px solid var(--line)}
+.key .chip{justify-self:start}
+.toggles{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13.5px}
+.toggles label{display:inline-flex;align-items:center;gap:7px;cursor:pointer}
+input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px}
+ol.log{list-style:none;margin:0;padding:0;display:grid;max-height:280px;overflow:auto;font-size:13.5px}
+ol.log li{display:grid;grid-template-columns:50px 12px minmax(0,1fr);gap:8px;padding:6px 0;border-top:1px solid var(--line);align-items:start}
+ol.log li:first-child{border-top:0}
+ol.log .t{font-family:var(--mono);font-size:11.5px;color:var(--muted);padding-top:3px}
+ol.log .d{width:10px;height:10px;margin-top:5px;background:var(--gc);border-radius:50%}
+ol.log .d.mira{border-radius:2px}ol.log .d.bo{border-radius:4px;height:13px;margin-top:3px}ol.log .d.luna{border-radius:2px 2px 5px 5px}ol.log .d.ori{border-radius:50% 50% 50% 2px}
+ol.log .d.world{background:transparent;border:2px solid var(--line-2)}
+.empty{color:var(--muted);font-size:13.5px;padding:6px 0}
+.iptable{display:grid;font-size:13px;overflow-x:auto}
+.iprow{display:grid;grid-template-columns:minmax(120px,1.5fr) 74px minmax(90px,1fr) 40px 50px;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line);min-width:420px}
+.iprow.head{border-top:0;color:var(--muted);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;font-family:var(--display);font-weight:600}
+.iprow .mono{font-size:12px}
+.iprow .wt{display:flex;align-items:center;gap:7px}
+.iprow .wt i{display:block;flex:1;height:6px;background:#0b1512;border-radius:3px;overflow:hidden}
+.iprow .wt i b{display:block;height:100%;background:var(--c);width:50%}
+.iprow.flag{background:rgba(243,191,66,.07)}
+.iprow.act .nmx{color:var(--accent);font-weight:600}
+.to{font-size:11.5px;color:var(--c);font-weight:600;letter-spacing:.04em}
+canvas#spark{width:100%;height:auto;aspect-ratio:300/76;display:block;background:#0f201d;border-radius:8px}
+.note{margin:0;font-size:13px;color:var(--muted)}
+.note b{color:var(--text);font-weight:600}
+.head-btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.lvl-sub{display:block;font-size:11.5px;font-weight:500;opacity:.85}
+.head-btns .seg .btn{padding:6px 12px;text-align:left}
+.pb-parts{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:6px}
+.pt{border:1px solid var(--line);background:var(--panel-2);border-radius:10px;padding:6px 9px;font-size:12.5px;color:var(--muted);line-height:1.3}
+.pt b{display:block;color:var(--text);font-size:13.5px;font-weight:600}
+.pt.ready{border-color:#3f6a2c}
+.pt.ready b::after{content:' \2713';color:var(--good)}
+.pt i{display:block;height:4px;border-radius:2px;background:#0b1512;margin-top:4px;overflow:hidden}
+.pt i u{display:block;height:100%;background:#9bd07a;text-decoration:none}
+ul.pb-habits{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+ul.pb-habits li{display:grid;gap:2px;padding:8px 10px;border-radius:10px;background:var(--panel-2);border:1px solid var(--line);font-size:13.5px}
+ul.pb-habits li.known{border-color:#3f6a2c}
+ul.pb-habits li.dropped{opacity:.7}
+ul.pb-habits .hn{font-weight:600;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline}
+ul.pb-habits .hp{color:var(--muted);font-size:12.5px}
+ul.pb-habits .hs{font-size:12.5px;color:var(--muted)}
+
+/* dialogs */
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(6,14,12,.82);display:grid;place-items:center;padding:16px;overflow:auto}
+.dlg{width:100%;max-width:580px;max-height:calc(100% - 8px);overflow:auto;background:var(--panel);border:1px solid var(--line-2);border-radius:16px;padding:22px 22px 20px;display:grid;gap:14px;box-shadow:0 30px 80px -20px #000}
+.dlg h2{font-size:26px;line-height:1.1;text-wrap:balance}
+.dlg p{margin:0;color:var(--muted)}
+.dlg p b,.dlg li b{color:var(--text);font-weight:600}
+.dlg ol{margin:0;padding-left:20px;display:grid;gap:8px;color:var(--muted)}
+.dlg .btnrow{display:flex;flex-wrap:wrap;gap:10px}
+.stars{font-size:38px;letter-spacing:6px;color:var(--accent);line-height:1}
+.stars .off{color:#38524a}
+.endrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:9px 0;border-top:1px solid var(--line);align-items:center}
+.endrow .nm{font-weight:600;color:var(--text)}
+.endrow .sm{grid-column:1/-1;font-size:12.5px;color:var(--muted)}
+.endrow .pc{font-family:var(--display);font-weight:700;font-size:20px;color:var(--text)}
+.insight{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--text)!important}
+</style>
+
+</head><body>
+<div class="app">
+  <header class="hud" aria-label="Game status">
+    <div class="hud-a">
+      <h1>Purpose Garden</h1>
+      <div class="head-btns">
+        <span class="seg" id="levels" role="group" aria-label="Level">
+          <button class="btn" data-level="1" aria-pressed="true">Level 1<span class="lvl-sub">Three friends</span></button>
+          <button class="btn" data-level="2" aria-pressed="false">Level 2<span class="lvl-sub">Five friends, new habits</span></button>
+        </span>
+      </div>
+      <div class="hud-ctl">
+        <button class="btn" id="play" aria-pressed="false">Play</button>
+        <button class="btn" id="step">Step</button>
+        <span class="seg" role="group" aria-label="Speed">
+          <button class="btn" data-speed="0.5" aria-pressed="false">½×</button>
+          <button class="btn" data-speed="1" aria-pressed="true">1×</button>
+          <button class="btn" data-speed="2" aria-pressed="false">2×</button>
+          <button class="btn" data-speed="4" aria-pressed="false">4×</button>
+        </span>
+        <button class="btn" id="reset">New year</button>
+        <button class="btn" id="howto">How to play</button>
+      </div>
+    </div>
+    <div class="hud-b">
+      <div>
+        <p class="h">The year <span class="mono" id="daytxt" style="text-transform:none;letter-spacing:0"></span></p>
+        <div class="year" id="year" aria-hidden="true">
+          <div class="ys" style="--c:var(--spring)"><b>Spring</b>berries grow<i></i></div>
+          <div class="ys" style="--c:var(--summer)"><b>Summer</b>plenty<i></i></div>
+          <div class="ys" style="--c:var(--autumn)"><b>Autumn</b>slowing<i></i></div>
+          <div class="ys" style="--c:var(--winter)"><b>Winter</b>hard<i></i></div>
+        </div>
+        <div class="ystat"><span id="seasonnote"></span></div>
+      </div>
+      <div>
+        <p class="h">Your score</p>
+        <div class="scorerow">
+          <span class="bignum" id="score">0%</span>
+          <span><span class="dots" id="dots"></span><span id="thrivetxt" class="sub">0 of 3 thriving now</span></span>
+        </div>
+        <div class="scorebar" id="scorebar" role="img" aria-label="Score so far">
+          <i id="scorefill"></i>
+          <span class="cut" style="left:35%"><span>★</span></span>
+          <span class="cut" style="left:55%"><span>★★</span></span>
+          <span class="cut" style="left:68%"><span>★★★</span></span>
+        </div>
+      </div>
+      <div class="effort" title="Placing things costs effort. One point comes back every day.">
+        <p class="h">Effort</p>
+        <span><span class="pips" id="pips"></span><span id="efftxt" class="mono"></span></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="play">
+    <nav class="roster" id="roster" aria-label="Creatures. Click one to look inside its mind."></nav>
+    <section class="stage" aria-label="The garden">
+      <div class="canvas-wrap">
+        <canvas id="garden" width="640" height="640" tabindex="0" aria-label="The garden, seen from above. The creatures move around. Use the tools below to change the garden."></canvas>
+        <div id="toast" role="status" aria-live="polite"></div>
+        <span class="tick" id="tickinfo"></span>
+        <p class="hint" id="hint" hidden></p>
+      </div>
+    </section>
+  </main>
+
+  <section class="dock" aria-label="Tools and detail buttons">
+    <div class="dock-row">
+      <div class="toolrow" role="group" aria-label="Gardener's tools">
+          <button class="tool" data-tool="inspect" aria-pressed="true" title="Look: click a creature to see what it wants and why">
+            <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="13" cy="13" r="8" fill="#cfe7ee" fill-opacity=".22" stroke="#d9e6df" stroke-width="2.6"/><path d="M19.5 19.5 27 27" stroke="#c08b57" stroke-width="4.6" stroke-linecap="round"/><path d="M8.6 11.6a5 5 0 0 1 4-4" stroke="#fff" stroke-opacity=".75" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+            <span class="tn">Look</span><span class="tc">free</span>
+          </button>
+          <button class="tool" data-tool="berries" aria-pressed="false" title="Trowel: plant a berry bush">
+            <svg viewBox="0 0 32 32" aria-hidden="true"><g transform="rotate(45 16 15)"><rect x="13.6" y="0.5" width="4.8" height="11" rx="2.4" fill="#c08b57"/><rect x="15" y="11" width="2" height="4" fill="#9fb0aa"/><path d="M16 14.500c-5 2.200-6 8-.9 15.200a1.100 1.100 0 0 0 1.800 0C22 22.700 21 16.700 16 14.500z" fill="#c5d3cd"/></g><circle cx="24" cy="24.500" r="3" fill="#e0574f"/><circle cx="27.500" cy="21" r="2.500" fill="#e0574f"/><path d="M24 22.500q.6-1.600 2-2" stroke="#4c8b55" stroke-width="1.500" fill="none" stroke-linecap="round"/></svg>
+            <span class="tn">Berries</span><span class="tc">1 effort</span>
+          </button>
+          <button class="tool" data-tool="hedge" aria-pressed="false" title="Shears: place a hedge (or click a hedge to remove it)">
+            <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M9 3 21 23" stroke="#c5d3cd" stroke-width="3.2" stroke-linecap="round"/><path d="M23 3 11 23" stroke="#9fb0aa" stroke-width="3.2" stroke-linecap="round"/><circle cx="21.600" cy="26.300" r="3.300" fill="none" stroke="#3fae6b" stroke-width="2.600"/><circle cx="10.400" cy="26.300" r="3.300" fill="none" stroke="#3fae6b" stroke-width="2.600"/><circle cx="16" cy="13" r="1.700" fill="#0f201c"/></svg>
+            <span class="tn">Hedge</span><span class="tc">1 effort</span>
+          </button>
+          <button class="tool" data-tool="thorns" aria-pressed="false" title="Briar: grow thorns (or click thorns to clear them)">
+            <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 25C10 23 9 15 16 14c6-1 8-6 12-9" fill="none" stroke="#a678b5" stroke-width="3" stroke-linecap="round"/><g fill="#e0c2ea"><path d="M8 22l-1.500-5 4.500 3z"/><path d="M13.500 18l1-5.500 3.500 4z"/><path d="M19.500 12l3-4.500 1 5.500z"/><path d="M25 8.500l4-1.500-2 4.500z"/><path d="M10.500 23l3 4.500 2-4.500z"/><path d="M18 16l3.500 3.500 1-5z"/></g></svg>
+            <span class="tn">Thorns</span><span class="tc">1 effort</span>
+          </button>
+          <button class="tool" data-tool="glimmer" aria-pressed="false" title="Lantern: curious creatures walk toward it for a while">
+            <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M11 8a5 5 0 0 1 10 0" fill="none" stroke="#c5d3cd" stroke-width="2"/><rect x="9" y="8" width="14" height="3.500" rx="1.500" fill="#9fb0aa"/><rect x="10" y="11.500" width="12" height="13" rx="3" fill="#ffe9a6"/><path d="M16 23c-3-2-3-5 0-9 3 4 3 7 0 9z" fill="#ff9d3c"/><rect x="9" y="24.500" width="14" height="3.500" rx="1.500" fill="#9fb0aa"/><path d="M10 11.500v13M22 11.500v13" stroke="#7a6a4a" stroke-width="1.400"/></svg>
+            <span class="tn">Lantern</span><span class="tc">1 effort</span>
+          </button>
+      </div>
+      <span class="vr" aria-hidden="true"></span>
+      <div class="menurow" role="group" aria-label="Look deeper">
+        <button class="mbtn" data-view="notebook" aria-expanded="false" title="Suggestions for what to do now">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2.2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+          Notebook<span class="badge" id="b-notebook" hidden></span>
+        </button>
+        <button class="mbtn" data-view="story" aria-expanded="false" title="What has happened in the garden">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10H12l-4.5 4v-4H4z"/><path d="M8 9.5h8M8 12.5h5"/></svg>
+          Story<span class="badge" id="b-story" hidden></span>
+        </button>
+        <button class="mbtn" data-view="book" aria-expanded="false" title="How creatures build new habits from parts" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V10"/><path d="M12 13c0-3.6-2.6-5.6-6.500-5.600 0 3.700 2.500 5.700 6.500 5.600z"/><path d="M12 15.500c0-3 2.200-5 5.800-5 0 3-2.100 5-5.800 5z"/></svg>
+          Habit book<span class="badge" id="b-book" hidden></span>
+        </button>
+        <button class="mbtn" data-view="mind" aria-expanded="false" title="The purpose network inside the selected creature">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2.300"/><circle cx="18" cy="6" r="2.300"/><circle cx="12" cy="18" r="2.700"/><path d="M7.700 7.800 10.500 15.900M16.300 7.800 13.500 15.900M8.400 6h7.200"/></svg>
+          Inside the mind
+        </button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<aside class="drawer" id="drawer" data-view="wants" hidden aria-label="Details">
+  <div class="drawer-head">
+    <div class="drawer-top">
+      <h2 id="drawer-title">Creature</h2>
+      <button class="btn" id="drawer-close" aria-label="Close details">Close</button>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Detail views">
+      <button class="tab" role="tab" data-view="wants" aria-selected="true">Creature</button>
+      <button class="tab" role="tab" data-view="book" aria-selected="false" hidden>Habit book</button>
+      <button class="tab" role="tab" data-view="mind" aria-selected="false">Inside the mind</button>
+      <button class="tab" role="tab" data-view="notebook" aria-selected="false">Notebook</button>
+      <button class="tab" role="tab" data-view="story" aria-selected="false">Story</button>
+    </div>
+    <label class="pausetog"><input type="checkbox" id="t-pause" checked><span>Pause the game while this is open</span></label>
+  </div>
+  <div class="drawer-body">
+    <div id="cards"></div>
+
+    <section class="panel" id="habits" hidden>
+      <div class="panel-head"><h2><span id="hb-name">Finn</span>’s habit book</h2><span class="sub">Level 2: how new habits are built</span></div>
+      <p class="note" id="hb-note"></p>
+      <div class="pb-parts" id="pb-parts"></div>
+      <ul class="pb-habits" id="pb-habits"></ul>
+    </section>
+
+    <section class="panel" id="mind">
+      <div class="panel-head"><h2>Inside <span id="mind-name">Finn</span>’s mind</h2><span class="sub">The purpose network</span></div>
+      <svg class="net" id="net" viewBox="0 0 380 236" role="img" aria-label="The three layers of the purpose network"></svg>
+      <p class="note"><b>Top:</b> the meta-purposive layer (REFLECT, RESIST, REVISE). <b>Middle:</b> habits. Thicker line = more trust (weight), fuller box = stronger pull. <b>Bottom:</b> the three purposes; a bigger circle means it is wanted more, and the one with a white ring is winning. A dashed line means RESIST is turning that habit down.</p>
+      <div class="toggles">
+        <label><input type="checkbox" id="t-resist" checked><span>RESIST on</span></label>
+        <label><input type="checkbox" id="t-revise" checked><span>REVISE on</span></label>
+      </div>
+      <div class="iptable" id="iptable"></div>
+      <canvas id="spark" width="600" height="152" aria-label="How strongly each purpose was wanted over the last 60 ticks"></canvas>
+      <p class="note">Each row is a habit. <b>Weight</b> is how much the creature trusts it, <b>Pull</b> is how strongly it is tempting right now, and <b>Record</b> is recent successes out of tries. The lines show how much the creature wanted each purpose over the last 60 ticks: solid = SURVIVE, dotted = FLOURISH, dashed = CONNECT. Turn RESIST or REVISE off to see what that part of the mind does.</p>
+    </section>
+
+    <section class="panel" id="notebook">
+      <div class="panel-head"><h2>Gardener’s notebook</h2><span class="sub">What you could do now</span></div>
+      <ul class="advice" id="advice"></ul>
+    </section>
+
+    <section class="panel" id="story">
+      <div class="panel-head"><h2>What happened</h2>
+        <div class="toggles"><label><input type="checkbox" id="t-learn"><span>Show small lessons</span></label><label><input type="checkbox" id="t-toast" checked><span>Pop-ups for key moments</span></label></div>
+      </div>
+      <div class="key" aria-label="What the labels in the story mean">
+        <span class="chip t-Noticed">Noticed</span><span>A habit (like exploring) stopped working, so the creature took note.</span>
+        <span class="chip t-Turned">Turned down</span><span>It lowers the pull of that habit, but does not delete it.</span>
+        <span class="chip t-Self">Self-control</span><span>The key moment: it wanted one thing and chose another.</span>
+        <span class="chip t-Learned">Learned</span><span>A habit got a little stronger or weaker after it worked or failed.</span>
+        <span class="chip t-Habit">New habit</span><span>Level 2: a habit built from parts the creature practiced.</span>
+        <span class="chip t-Slept">Slept</span><span>It ran out of energy and had to rest.</span>
+      </div>
+      <ol class="log" id="log"></ol>
+    </section>
+  </div>
+</aside>
+
+<div class="overlay" id="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="dlg-title"><div class="dlg" id="dlg"></div></div>
+
+<div id="about-src" hidden>
+  <p><b>How it works.</b> Each creature runs its own three-layer purpose network from Gomez &amp; DeLancey, <i>Purposeful Computation</i> (BICA 2026): S(t+1) = 0.3·S(t) + 0.4·obs + 0.3·h, the strongest purpose wins, RESIST turns down a flagged habit’s pull by 70%, and REVISE changes weights by ±0.015. There is no controller inside. SURVIVE, FLOURISH and CONNECT are shown here as Energy, Discovery and Company.</p>
+  <p><b>Adjusted for a small garden.</b> The paper’s neighbor-count terms are replaced (in Level 1) by distance to the nearest friend, a “loneliness” state, and a “boredom” state. Each creature also has a small built-in temperament. Food, rest, thorns, mist, seasons and scoring are this game’s own rules. It is a teaching demo, not the paper’s evaluation code.</p>
+  <p><b>Level 2 goes beyond the paper.</b> Five creatures use the paper’s neighbor-count terms. Building new habits from parts (a verb like “Go to” plus targets like “Berries” and “Friend”), after repeated and tested use, is an extension made for this game. It adds structure only to the instrumental layer. The meta-purposive layer (REFLECT, RESIST, REVISE) is unchanged and treats a built habit like any other, and nothing is added on top of it. A built habit that keeps failing is dropped; that pruning rule is also part of the extension.</p>
+</div>
+
+<script>
+/* Purpose Garden engine — no DOM, runs in browser and node.
+ *
+ * Implements the three-layer purpose network of Gomez & DeLancey (BICA 2026):
+ *   terminal layer   : SURVIVE, FLOURISH, CONNECT (fixed)
+ *   instrumental     : Get Food, Rest, Gather nearby, Align with neighbors, Explore (weights revisable)
+ *   meta-purposive   : REFLECT, RESIST, REVISE (ordinary parts of the same graph)
+ *
+ * Salience:  S(P,t+1) = a*S(P,t) + b*obs(P,t) + g*h(P,t)       a=.3  b=.4  g=.3
+ * RESIST:    obs term multiplied by (1 - 0.7) for a flagged instrumental purpose
+ * REVISE:    w <- w + 0.015 * sign(outcome)
+ * REFLECT:   align = w*S - penalty(success rate < .5); flag when align < 0
+ * dominant = argmax S, tie-break SURVIVE > FLOURISH > CONNECT
+ *
+ * LEVEL 2 (beyond the paper, labeled EXTENSION): five creatures, the paper's neighbor-count terms, and new habits built from
+ *   parts (verb + target). A habit is only built after its parts have each been repeated and tested several times.
+ * Adaptations for a 3-creature garden (the paper's density terms assume crowds) are marked "ADAPT".
+ */
+const Engine = (function () {
+  'use strict';
+
+  const W = 20, H = 20;
+  const MAP = [
+    'WWWWWWWWWWWWWWWWWWWW',
+    'W....B.......W..B..W',
+    'W..WW........W.....W',
+    'W..W...TT..........W',
+    'W.......TT....WW...W',
+    'W.....R.......W....W',
+    'W..B.......WW......W',
+    'W.........W........W',
+    'W......B...........W',
+    'W..............R...W',
+    'W...........B......W',
+    'W..W...........B...W',
+    'W..W..........WW...W',
+    'W.......R..........W',
+    'W...TT.........W...W',
+    'W...TT....WW.......W',
+    'W.B........W...B...W',
+    'W.........W........W',
+    'W..B.........WW..B.W',
+    'WWWWWWWWWWWWWWWWWWWW'
+  ];
+
+  const THRIVE_LINE = 30;   // a creature thrives when Energy, Discovery and Company are all at or above this
+  const NO_EFFORT = 'You are out of effort. It refills a little every day.';
+  const TERMS = ['SURVIVE', 'FLOURISH', 'CONNECT'];
+  const IP_DEFS = [
+    { id: 'GetFood', label: 'Get Food', to: 'SURVIVE', parts: ['Go to', 'Berries'] },
+    { id: 'Rest', label: 'Rest', to: 'SURVIVE', parts: ['Stay by', 'Rest spot'] },
+    { id: 'Gather', label: 'Gather nearby', to: 'CONNECT', parts: ['Go to', 'Friend'] },
+    { id: 'Align', label: 'Align with neighbors', to: 'CONNECT', parts: ['Stay by', 'Friend'] },
+    { id: 'Explore', label: 'Explore', to: 'FLOURISH', parts: ['Go to', 'Mist'] }
+  ];
+  /* EXTENSION (level 2): habits that can be built later, from parts the creature has already practiced */
+  const NEW_HABITS = [
+    { id: 'RestEarly', label: 'Rest before tired', to: 'SURVIVE', parts: ['Go to', 'Rest spot'], learned: true },
+    { id: 'Picnic', label: 'Eat with a friend', to: 'CONNECT', parts: ['Go to', 'Berries', 'Friend'], learned: true },
+    { id: 'Together', label: 'Explore with a friend', to: 'FLOURISH', parts: ['Go to', 'Mist', 'Friend'], learned: true }
+  ];
+  const PARTS = ['Go to', 'Stay by', 'Berries', 'Rest spot', 'Friend', 'Mist'];
+  const IP_BY_ID = {};
+  IP_DEFS.concat(NEW_HABITS).forEach(d => { IP_BY_ID[d.id] = d; });
+
+  const PARAMS = {
+    alpha: 0.3, beta: 0.4, gamma: 0.3,   // paper, Appendix A.1
+    resist: 0.7,                          // paper, A.4
+    delta: 0.015,                         // paper, A.4
+    thr: 0.0,                             // paper, A.4 (align < 0 triggers RESIST)
+    kappa: 0.5,                           // ADAPT: strength of activation from instrumental nodes to terminals
+    activeMin: 0.25,                      // an instrumental purpose counts as "active" above this pull
+    window: 220,                          // ticks an outcome stays in the success record
+    temperObs: 0.12, temperHome: 0.12,
+    effortMax: 6, starCuts: [0.35, 0.55, 0.68],
+    needRep: 4, needTests: 3, needRate: 0.34, newW: 0.4, dropAfter: 6, dropBelow: 0.34,
+    metabolism: 0.4, hazard: 2.5, restGain: 1.5, berryGain: 14, contactGain: 0.25
+  };
+
+  /* one year = 4 seasons x 30 days; one day = 8 ticks */
+  const TICKS_PER_DAY = 8, SEASON_LEN = 240, YEAR_LEN = 960;
+  const SEASONS = [
+    { id: 'spring', name: 'Spring', regrow: 1 / 32, cold: 1.0, note: 'Berries grow at a normal pace.' },
+    { id: 'summer', name: 'Summer', regrow: 1 / 24, cold: 1.0, note: 'Plenty of berries. A good time to explore.' },
+    { id: 'autumn', name: 'Autumn', regrow: 1 / 55, cold: 1.2, note: 'Berries grow more slowly. Get ready for winter.' },
+    { id: 'winter', name: 'Winter', regrow: 1 / 400, cold: 2.3, note: 'Berries barely grow and creatures burn energy faster.' }
+  ];
+  const IP_GERUND = { GetFood: 'looking for food', Rest: 'resting', Gather: 'walking to friends', Align: 'staying close to friends', Explore: 'exploring', RestEarly: 'resting before getting tired', Picnic: 'eating with a friend', Together: 'exploring with a friend' };
+  const IP_URGE = { GetFood: 'go for berries', Rest: 'rest', Gather: 'walk over to friends', Align: 'stay beside friends', Explore: 'explore', RestEarly: 'rest before getting tired', Picnic: 'share berries with a friend', Together: 'explore with a friend' };
+  const TERM_PHRASE = { SURVIVE: 'staying safe', FLOURISH: 'discovering new things', CONNECT: 'being with friends' };
+
+  const CHARS = [
+    { id: 'finn', name: 'Finn', speed: 0.85, caution: 0.6, energy: 78, start: [9, 9],
+      temper: { CONNECT: 0.7 },
+      w: { GetFood: 0.5, Rest: 0.5, Gather: 0.6, Align: 0.6, Explore: 0.4 } },
+    { id: 'mira', name: 'Mira', speed: 0.7, caution: 1.0, energy: 85, start: [11, 9],
+      temper: { SURVIVE: 1.8 },
+      w: { GetFood: 0.65, Rest: 0.6, Gather: 0.5, Align: 0.5, Explore: 0.35 } },
+    { id: 'bo', name: 'Bo', speed: 1.0, caution: 0.25, energy: 72, start: [10, 11],
+      temper: { FLOURISH: 1 },
+      w: { GetFood: 0.5, Rest: 0.4, Gather: 0.4, Align: 0.4, Explore: 0.65 } }
+  ];
+
+  const CHARS_L2 = CHARS.concat([
+    { id: 'luna', name: 'Luna', speed: 0.8, caution: 0.8, energy: 80, start: [8, 11],
+      temper: { CONNECT: 0.8, SURVIVE: 0.4 },
+      w: { GetFood: 0.55, Rest: 0.5, Gather: 0.65, Align: 0.6, Explore: 0.35 } },
+    { id: 'ori', name: 'Ori', speed: 0.95, caution: 0.4, energy: 74, start: [12, 11],
+      temper: { FLOURISH: 0.7, CONNECT: 0.25 },
+      w: { GetFood: 0.5, Rest: 0.4, Gather: 0.45, Align: 0.4, Explore: 0.6 } }
+  ]);
+  const L2_PATCHES = [];   // level 2 uses the same garden, shared by five creatures
+
+  function rng(seed) {
+    let a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+  const idx = (x, y) => y * W + x;
+  const prox = d => (d <= 10 ? 1 - d / 12 : 0);
+
+  /* ---------------------------------------------------------------- MIND */
+  class Mind {
+    constructor(cfg, mode, level) {
+      this.mode = mode || 'full';
+      this.level = level || 1;
+      this.learning = this.level === 2;                // EXTENSION: habit building
+      this.defs = IP_DEFS.slice();
+      this.dropped = {};
+      this.parts = {};
+      PARTS.forEach(p => { this.parts[p] = { rep: 0, tests: 0, ok: 0 }; });
+      this.temper = Object.assign({ SURVIVE: 0, FLOURISH: 0, CONNECT: 0 }, cfg.temper);
+      this.S = { SURVIVE: 0.3, FLOURISH: 0.3, CONNECT: 0.3 };
+      this.ip = {};
+      IP_DEFS.forEach(d => {
+        this.ip[d.id] = { S: 0.2, w: cfg.w[d.id], w0: cfg.w[d.id], hist: [], flag: false, obs: 0, cf: 0, align: 0, n: 0, rate: null, tot: 0, okTot: 0 };
+      });
+      this.resistOn = true;
+      this.reviseOn = true;
+      this.dom = 'FLOURISH';
+      this.act = 'Explore';
+      this.loneliness = 0.2;
+      this.boredom = 0.25;
+      this.trace = [];
+      this.heldT = -999;
+      this.heldInfo = null;
+      this.randAct = null; this.randUntil = 0;
+      this.rand = rng(cfg.name.length * 977 + 13);
+    }
+
+    record(ipState, tick) {
+      ipState.hist = ipState.hist.filter(r => tick - r.t <= PARAMS.window).slice(-10);
+      const n = ipState.hist.length;
+      return { n, rate: n ? ipState.hist.filter(r => r.ok).length / n : null };
+    }
+
+    update(env, tick, name) {
+      const P = PARAMS, ev = [];
+      const e = env.energy / 100, low = 1 - e;
+
+      // internal state: loneliness grows when apart and resets in company (ADAPT: replaces neighbor-count term)
+      if (env.friendDist > 3) this.loneliness = clamp(this.loneliness + 0.018);
+      else if (env.friendDist <= 2) this.loneliness = clamp(this.loneliness - 0.08);
+      this.boredom = clamp(this.boredom + 0.0055);   // ADAPT: curiosity builds until something new is found
+
+      // proximal (environmental) pull on each instrumental purpose
+      const obs = {
+        GetFood: env.foodProx * (0.3 + 0.7 * low),
+        Rest: (0.15 + 0.85 * low) * (0.4 + 0.6 * env.restProx),
+        Gather: env.friendDist > 2 ? 0.35 + 0.35 * Math.min(1, (env.friendDist - 2) / 8) : 0,
+        Align: env.friendDist <= 2 ? 0.8 : 0,
+        Explore: Math.max(env.lureProx, 0.7 * env.fogProx) * (0.4 + 0.6 * e)
+      };
+      if (this.learning) {                              // EXTENSION: pull for the built habits
+        obs.RestEarly = env.restProx * (0.4 + 0.8 * low) * (e < 0.9 ? 1 : 0.2);
+        obs.Picnic = (env.friendDist <= 8 ? 1 : 0) * (env.picnicProx || 0) * (low > 0.2 ? 0.4 + 0.6 * low : 0);
+        obs.Together = (env.togetherProx || 0) * (0.4 + 0.6 * e) * (env.friendDist <= 5 ? 1 : 0.4);
+      }
+
+      const prevS = Object.assign({}, this.S);
+      const val = {}, cf = {}, resisting = [];
+      this.defs.forEach(d => {
+        const s = this.ip[d.id];
+        const h = s.w * prevS[d.to];                         // homeostatic term: the drive it serves
+        const cfv = clamp(P.alpha * s.S + P.beta * obs[d.id] + P.gamma * h);
+        const rec = this.record(s, tick);
+        const penalty = rec.n >= 3 && rec.rate < 0.5 ? (0.5 - rec.rate) * 2 : 0;
+        const align = s.w * cfv - penalty;                    // REFLECT
+        // hysteresis: once flagged, a purpose stays flagged until it is clearly quiet or clearly paying off again
+        const flagged = this.mode === 'full' && rec.n >= 3 &&
+          (s.flag ? (cfv > P.activeMin * 0.5 && align < P.thr + 0.1) : (cfv > P.activeMin && align < P.thr));
+        if (flagged && !s.flag && tick - (s.lastLog || -999) > 40) {
+          ev.push({ kind: 'REFLECT', ip: d.id, align, rate: rec.rate, n: rec.n });
+          if (this.resistOn) ev.push({ kind: 'RESIST', ip: d.id });
+          s.lastLog = tick;
+        }
+        s.flag = flagged; s.obs = obs[d.id]; s.cf = cfv; s.align = align; s.n = rec.n; s.rate = rec.rate;
+        const res = flagged && this.resistOn;                  // RESIST
+        if (res) resisting.push(d.id);
+        s.resisting = res;
+        val[d.id] = res ? clamp(P.alpha * s.S + P.beta * obs[d.id] * (1 - P.resist) + P.gamma * h) : cfv;
+        cf[d.id] = cfv;
+      });
+
+      // terminal layer
+      const nc = env.nearCount;
+      const base = {
+        SURVIVE: 0.4 * low + 0.3 * env.hazardProx + 0.15 * (env.friendDist > 5 ? 1 : 0),
+        FLOURISH: 0.26 * e + 0.1 * (env.age > 30 ? 1 : 0),
+        CONNECT: 0.2 * (env.friendDist <= 3 ? 1 : 0)
+      };
+      if (this.level === 2) {                           // the paper's neighbor-count terms (isolated < 2, crowded > 3 of 4, best density 2-3)
+        base.SURVIVE = 0.4 * low + 0.3 * env.hazardProx + 0.15 * (nc < 1 ? 1 : 0) + 0.1 * (nc >= 4 ? 1 : 0);
+        base.CONNECT = 0.2 * (nc >= 2 && nc <= 3 ? 1 : 0) + 0.1 * (nc === 1 ? 1 : 0);
+      }
+      const hom = {
+        SURVIVE: 0.5 - env.energy / 200,
+        FLOURISH: Math.max(0, env.energy / 150 - 0.3) + 0.35 * this.boredom,
+        CONNECT: 0.2 * Math.min(2, nc) / 2 + 0.85 * this.loneliness
+      };
+      const newS = {}, cfS = {};
+      TERMS.forEach(T => {
+        let a1 = 0, a2 = 0;
+        this.defs.forEach(d => { if (d.to === T) { a1 += this.ip[d.id].w * val[d.id]; a2 += this.ip[d.id].w * cf[d.id]; } });
+        if (this.level === 2) {                          // EXTENSION: a terminal's support is shared among the habits that serve it, so a new habit does not inflate it
+          const nb = IP_DEFS.filter(d => d.to === T).length, nc2 = this.defs.filter(d => d.to === T).length;
+          a1 *= nb / nc2; a2 *= nb / nc2;
+        }
+        const tp = this.temper[T] || 0;
+        const h = clamp(hom[T] + tp * P.temperHome);
+        newS[T] = clamp(P.alpha * prevS[T] + P.beta * clamp(base[T] + tp * P.temperObs + P.kappa * a1) + P.gamma * h);
+        cfS[T] = clamp(P.alpha * prevS[T] + P.beta * clamp(base[T] + tp * P.temperObs + P.kappa * a2) + P.gamma * h);
+      });
+      const argmax = obj => { let b = TERMS[0]; TERMS.forEach(T => { if (obj[T] > obj[b] + 1e-9) b = T; }); return b; };
+      const dom = argmax(newS), cfDom = argmax(cfS);
+      const pick = (T, v) => { let best = null, bs = -1; this.defs.forEach(d => { if (d.to === T) { const sc = this.ip[d.id].w * v[d.id]; if (sc > bs) { bs = sc; best = d.id; } } }); return best; };
+      let act = pick(dom, val);
+
+      // baselines used for comparison studies (not shown in the game)
+      if (this.mode === 'greedy') { let b = null, bs = -1; this.defs.forEach(d => { if (obs[d.id] > bs) { bs = obs[d.id]; b = d.id; } }); act = b; }
+      if (this.mode === 'random') { if (tick >= this.randUntil) { this.randAct = this.defs[Math.floor(this.rand() * this.defs.length)].id; this.randUntil = tick + 8; } act = this.randAct; }
+
+      this.defs.forEach(d => { this.ip[d.id].S = val[d.id]; });
+      this.S = newS;
+
+      // did RESIST change what the creature is doing? (one-step counterfactual, no resistance)
+      let held = null;
+      if (resisting.length && cfDom !== dom && this.mode === 'full') {
+        const wantIp = pick(cfDom, cf);
+        held = { wantIp, wantTerm: cfDom, keepTerm: dom, keepIp: act };
+        if (tick - this.heldT > 10) ev.push({ kind: 'HELD', wantIp, wantTerm: cfDom, keepTerm: dom });
+        this.heldT = tick; this.heldInfo = held;
+      }
+
+      this.dom = dom; this.act = act;
+      this.trace.push({ t: tick, S: Object.assign({}, newS), dom, act });
+      if (this.trace.length > 60) this.trace.shift();
+      this.tryLearn(tick).forEach(x => ev.push(x));
+      return { dom, ip: act, ev, held, resisting };
+    }
+
+    /* EXTENSION: a creature notes each time it starts a habit (a repeat) and each result (a test) against the habit's parts */
+    episode(id) {
+      const d = IP_BY_ID[id]; if (!d) return;
+      d.parts.forEach(p => { this.parts[p].rep++; });
+    }
+    partReady(p) {
+      const s = this.parts[p], P = PARAMS;
+      return s.rep >= P.needRep && s.tests >= P.needTests && s.ok / Math.max(1, s.tests) >= P.needRate;
+    }
+    /* returns events. Builds at most one habit per call; drops a habit that keeps failing. */
+    tryLearn(tick) {
+      const ev = [], P = PARAMS;
+      if (!this.learning) return ev;
+      for (const d of NEW_HABITS) {
+        if (this.ip[d.id] || this.dropped[d.id]) continue;
+        if (d.parts.every(p => this.partReady(p))) {
+          this.ip[d.id] = { S: 0.2, w: P.newW, w0: P.newW, hist: [], flag: false, obs: 0, cf: 0, align: 0, n: 0, rate: null, tot: 0, okTot: 0, born: tick };
+          this.defs.push(d);
+          ev.push({ kind: 'HABIT', ip: d.id });
+          break;
+        }
+      }
+      for (const d of this.defs.slice()) {
+        if (!d.learned) continue;
+        const s = this.ip[d.id];
+        if (s.tot >= P.dropAfter && s.okTot / s.tot < P.dropBelow) {
+          this.defs = this.defs.filter(x => x !== d); delete this.ip[d.id]; this.dropped[d.id] = { ok: s.okTot, n: s.tot };
+          ev.push({ kind: 'DROP', ip: d.id, ok: s.okTot, n: s.tot });
+        }
+      }
+      return ev;
+    }
+    /* what the creature knows about each part, and which built habits are locked, known or dropped */
+    book() {
+      return {
+        parts: PARTS.map(p => Object.assign({ name: p, ready: this.partReady(p) }, this.parts[p])),
+        habits: NEW_HABITS.map(d => ({ def: d, state: this.ip[d.id] ? 'known' : this.dropped[d.id] ? 'dropped' : 'locked', drop: this.dropped[d.id] || null }))
+      };
+    }
+
+    discover(tiles, berries) {
+      this.boredom = clamp(this.boredom - 0.03 * tiles - (berries ? 0.25 : 0));
+    }
+
+    outcome(id, ok, tick) {
+      const s = this.ip[id];
+      if (!s) return null;                       // the habit was just dropped
+      s.hist.push({ t: tick, ok });
+      s.tot++; if (ok) s.okTot++;
+      IP_BY_ID[id].parts.forEach(p => { const q = this.parts[p]; q.tests++; if (ok) q.ok++; });
+      if (s.hist.length > 12) s.hist.shift();
+      if (this.reviseOn && this.mode === 'full') {                 // REVISE
+        const old = s.w;
+        s.w = clamp(s.w + PARAMS.delta * (ok ? 1 : -1), 0.05, 0.95);
+        return { kind: 'REVISE', ip: id, ok, w: s.w, old };
+      }
+      return null;
+    }
+  }
+
+  /* --------------------------------------------------------------- WORLD */
+  class World {
+    constructor(seed, opts) {
+      opts = opts || {};
+      this.seed = seed == null ? 7 : seed;
+      this.mode = opts.mode || 'full';
+      this.rand = rng(this.seed);
+      this.tick = 0;
+      this.season = 'spring';
+      this.wall = new Uint8Array(W * H); this.haz = new Uint8Array(W * H);
+      this.rest = new Uint8Array(W * H); this.patch = new Uint8Array(W * H);
+      this.berries = new Uint8Array(W * H); this.timer = new Float32Array(W * H);
+      this.fog = new Uint8Array(W * H);
+      this.lures = [];
+      this.events = [];
+      this.evSeq = 0;
+      this.planted = new Uint8Array(W * H);
+      this.effort = PARAMS.effortMax;
+      this.finished = false;
+      this.seasonIdx = 0;
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+        const c = MAP[y][x], i = idx(x, y);
+        if (c === 'W') this.wall[i] = 1;
+        if (c === 'T') this.haz[i] = 1;
+        if (c === 'R') this.rest[i] = 1;
+        if (c === 'B') { this.patch[i] = 1; this.berries[i] = 3; }
+        const far = Math.max(Math.abs(x - 9.5), Math.abs(y - 9.5)) > 4.5;
+        this.fog[i] = far ? 1 : 0;
+      }
+      this.level = opts.level === 2 ? 2 : 1;
+      this.cuts = this.level === 2 ? [0.35, 0.5, 0.62] : PARAMS.starCuts;
+      if (this.level === 2) L2_PATCHES.forEach(([x, y]) => { const i = idx(x, y); this.patch[i] = 1; this.berries[i] = 3; });
+      this.agents = (this.level === 2 ? CHARS_L2 : CHARS).map(c => this.makeAgent(c));
+    }
+
+    makeAgent(c) {
+      const mind = new Mind(c, this.mode, this.level);
+      const a = {
+        id: c.id, name: c.name, speed: c.speed, caution: c.caution,
+        x: c.start[0], y: c.start[1], px: c.start[0], py: c.start[1], acc: 0,
+        energy: c.energy, age: 0, sleep: 0, hurt: -99, mind,
+        st: { ip: null }, stats: {}, collapses: 0, ate: 0, meta: null, dec: null, faceX: 1,
+        score: { ticks: 0, thrive: 0, hOK: 0, bOK: 0, gOK: 0 }, heldCount: 0, noticedCount: 0, env: null
+      };
+      IP_DEFS.concat(NEW_HABITS).forEach(d => { a.stats[d.id] = { n: 0, ok: 0 }; });
+      return a;
+    }
+
+    get idxOf() { return idx; }
+
+    emit(a, e) {
+      const gerund = IP_GERUND[e.ip], urge = IP_URGE[e.ip];
+      let text = '', tag = '';
+      switch (e.kind) {
+        case 'REFLECT': tag = 'Noticed'; a.noticedCount++;
+          text = `${a.name} noticed that ${gerund} has not worked well lately (${Math.round(e.rate * e.n)} of ${e.n} recent tries).`; break;
+        case 'RESIST': tag = 'Turned down';
+          text = `So ${a.name} turns down the urge to ${urge}. Its pull is cut by 70%.`; break;
+        case 'HELD': tag = 'Self-control'; a.heldCount++;
+          text = `${a.name} felt drawn to ${IP_URGE[e.wantIp]}, but chose ${TERM_PHRASE[e.keepTerm]} instead.`; break;
+        case 'REVISE': tag = 'Learned';
+          text = `${a.name} now trusts ${gerund} ${e.ok ? 'a little more' : 'a little less'}.`; break;
+        case 'HABIT': { tag = 'New habit'; const d = IP_BY_ID[e.ip];
+          text = `${a.name} built a new habit: “${d.label}” (${d.parts.join(' + ')}). Each part had been repeated and tested several times.`; break; }
+        case 'DROP': { tag = 'Dropped'; const d = IP_BY_ID[e.ip];
+          text = `${a.name} gave up “${d.label}”: it worked only ${e.ok} of ${e.n} times.`; break; }
+        case 'FAINT': tag = 'Slept'; text = `${a.name} ran out of energy and fell asleep for a while.`; break;
+        case 'WAKE': tag = 'Woke'; text = `${a.name} woke up, hungry.`; break;
+      }
+      const rec = Object.assign({ id: ++this.evSeq, t: this.tick, who: a.id, name: a.name, text, tag }, e);
+      this.events.push(rec);
+      if (this.events.length > 400) this.events.shift();
+      if (e.kind !== 'REVISE' && e.kind !== 'HABIT' && e.kind !== 'DROP') a.meta = { kind: e.kind, t: this.tick };
+    }
+
+    emitWorld(kind, text, tag) {
+      this.events.push({ id: ++this.evSeq, t: this.tick, who: 'world', name: 'Garden', kind, text, tag: tag || 'Garden' });
+      if (this.events.length > 400) this.events.shift();
+    }
+
+    /* pathfinding: hazard tiles are expensive (more so for cautious creatures) */
+    paths(a) {
+      const dist = new Float32Array(W * H).fill(Infinity), prev = new Int16Array(W * H).fill(-1);
+      const occ = new Set(this.agents.filter(o => o !== a).map(o => idx(o.x, o.y)));
+      const hazCost = 8 * a.caution;
+      const s = idx(a.x, a.y);
+      dist[s] = 0;
+      const q = [s], inq = new Uint8Array(W * H); inq[s] = 1;
+      while (q.length) {
+        const u = q.shift(); inq[u] = 0;
+        const ux = u % W, uy = (u / W) | 0;
+        const nb = [[ux + 1, uy], [ux - 1, uy], [ux, uy + 1], [ux, uy - 1]];
+        for (let k = 0; k < 4; k++) {
+          const vx = nb[k][0], vy = nb[k][1];
+          if (vx < 0 || vy < 0 || vx >= W || vy >= H) continue;
+          const v = idx(vx, vy);
+          if (this.wall[v]) continue;
+          const nd = dist[u] + 1 + (this.haz[v] ? hazCost : 0) + (occ.has(v) ? 4 : 0);
+          if (nd < dist[v]) { dist[v] = nd; prev[v] = u; if (!inq[v]) { inq[v] = 1; q.push(v); } }
+        }
+      }
+      return { dist, prev };
+    }
+
+    observe(a) {
+      const P = this.paths(a);
+      const R = this.rand;
+      const nearest = (test, jitter) => {
+        let best = -1, bd = Infinity;
+        for (let i = 0; i < W * H; i++) {
+          if (!test(i) || P.dist[i] === Infinity) continue;
+          const d = P.dist[i] + (jitter ? R() * 0.05 : 0);
+          if (d < bd) { bd = d; best = i; }
+        }
+        return { i: best, d: best < 0 ? Infinity : P.dist[best] };
+      };
+      const food = nearest(i => this.patch[i] && this.berries[i] > 0 && !this.fog[i]);
+      const rest = nearest(i => this.rest[i] && !this.fog[i]);
+      const fog = nearest(i => this.fog[i] && !this.wall[i], true);
+      let lure = { i: -1, d: Infinity };
+      this.lures.forEach(l => { const i = idx(l.x, l.y); if (P.dist[i] < lure.d) lure = { i, d: P.dist[i] }; });
+      let friend = null, fd = Infinity, near = 0;
+      this.agents.forEach(o => {
+        if (o === a) return;
+        const d = Math.hypot(o.x - a.x, o.y - a.y);
+        if (d < fd) { fd = d; friend = o; }
+        if (Math.max(Math.abs(o.x - a.x), Math.abs(o.y - a.y)) <= 3) near++;
+      });
+      let hd = Infinity;
+      for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) {
+        const x = a.x + dx, y = a.y + dy;
+        if (x < 0 || y < 0 || x >= W || y >= H) continue;
+        if (this.haz[idx(x, y)]) hd = Math.min(hd, Math.max(Math.abs(dx), Math.abs(dy)));
+      }
+      let pic = { i: -1, d: Infinity }, tog = { i: -1, d: Infinity };
+      if (this.level === 2 && friend) {                       // EXTENSION: targets that use a friend as a second part
+        let bs = Infinity, ts = Infinity;
+        for (let i = 0; i < W * H; i++) {
+          if (P.dist[i] === Infinity) continue;
+          const fx = i % W, fy = (i / W) | 0, dd = Math.hypot(fx - friend.x, fy - friend.y);
+          if (this.patch[i] && this.berries[i] > 0 && !this.fog[i]) { const sc = P.dist[i] + 1.5 * dd; if (sc < bs) { bs = sc; pic = { i, d: P.dist[i] }; } }
+          if (this.fog[i] && !this.wall[i]) { const sc = P.dist[i] + 1.5 * dd; if (sc < ts) { ts = sc; tog = { i, d: P.dist[i] }; } }
+        }
+      }
+      const lureSig = prox(lure.d), fogSig = 0.7 * prox(fog.d);
+      let exploreTarget = null;
+      if (lure.i >= 0 && lureSig >= fogSig) exploreTarget = { idx: lure.i, kind: 'lure' };
+      else if (fog.i >= 0) exploreTarget = { idx: fog.i, kind: 'fog' };
+      return {
+        energy: a.energy, age: a.age, P,
+        foodD: food.d, restD: rest.d, fogD: fog.d, lureD: lure.d,
+        foodIdx: food.i, foodProx: prox(food.d),
+        restIdx: rest.i, restProx: prox(rest.d),
+        fogProx: prox(fog.d), lureProx: lureSig,
+        friend, friendDist: fd, nearCount: near,
+        hazardProx: hd === Infinity ? 0 : 1 - hd / 4,
+        exploreTarget,
+        picnicIdx: pic.i, picnicProx: prox(pic.d), togetherIdx: tog.i, togetherProx: prox(tog.d)
+      };
+    }
+
+    reveal(a) {
+      let n = 0, found = 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const x = a.x + dx, y = a.y + dy;
+        if (x < 0 || y < 0 || x >= W || y >= H) continue;
+        const i = idx(x, y);
+        if (this.fog[i]) {
+          this.fog[i] = 0;
+          if (!this.wall[i]) n++;
+          if (this.patch[i] && this.berries[i] > 0) { a.st.discovered = (a.st.discovered || 0) + 1; found++; }
+        }
+      }
+      a.st.revealed = (a.st.revealed || 0) + n;
+      if (n || found) {
+        a.mind.discover(n, found);
+        // creatures close by see it too, so exploring together feeds everyone's curiosity
+        const sh = a.dec && a.dec.ip === 'Together' ? 1.0 : 0.6;   // EXTENSION: exploring on purpose with a friend shares the whole find
+        this.agents.forEach(o => {
+          if (o !== a && Math.max(Math.abs(o.x - a.x), Math.abs(o.y - a.y)) <= 3) o.mind.discover(n * sh, found * sh);
+        });
+      }
+      return n;
+    }
+
+    occupied(i, self) { return this.agents.some(o => o !== self && idx(o.x, o.y) === i); }
+
+    nextStep(prev, start, target) {
+      let cur = target;
+      if (prev[cur] === -1) return -1;
+      let guard = 0;
+      while (prev[cur] !== start) { cur = prev[cur]; if (cur < 0 || ++guard > 500) return -1; }
+      return cur;
+    }
+
+    randomTile(dist, lo, hi) {
+      const c = [];
+      for (let i = 0; i < W * H; i++) if (dist[i] >= lo && dist[i] <= hi && !this.haz[i]) c.push(i);
+      return c.length ? c[Math.floor(this.rand() * c.length)] : -1;
+    }
+
+    execute(a, dec, env) {
+      const t = this.tick, P = env.P, me = idx(a.x, a.y);
+      if (a.st.ip !== dec.ip) { a.st = { ip: dec.ip, pursuit: 0, revealed: 0, discovered: 0, contact: 0, rested: 0 }; if (a.mind.learning) a.mind.episode(dec.ip); }
+      const st = a.st;
+      const outcome = ok => {
+        const ev = a.mind.outcome(dec.ip, ok, t);
+        const sx = a.stats[dec.ip] || (a.stats[dec.ip] = { n: 0, ok: 0 }); sx.n++; if (ok) sx.ok++;
+        if (ev) this.emit(a, ev);
+        st.pursuit = 0; st.revealed = 0; st.discovered = 0;
+      };
+      a.acc = Math.min(a.acc + a.speed, 1.5);
+      let canMove = false;
+      if (a.acc >= 1) { canMove = true; a.acc -= 1; }
+      const stepTo = target => {
+        if (!canMove || target < 0) return;
+        const cur = idx(a.x, a.y);
+        if (cur === target) return;
+        const nx = this.nextStep(P.prev, cur, target);
+        if (nx < 0 || this.occupied(nx, a)) return;
+        const ox = a.x;
+        a.x = nx % W; a.y = (nx / W) | 0;
+        if (a.x !== ox) a.faceX = a.x > ox ? 1 : -1;
+        this.reveal(a);
+      };
+
+      switch (dec.ip) {
+        case 'GetFood': {
+          const f = env.foodIdx;
+          if (f < 0) break;
+          if (me === f) {
+            if (this.berries[f] > 0 && a.energy < 96) {
+              this.berries[f]--; a.energy = Math.min(100, a.energy + PARAMS.berryGain); a.ate++;
+              if (!st.ate) { st.ate = true; outcome(true); }
+            } else if (this.berries[f] === 0) outcome(false);
+          } else {
+            stepTo(f); st.pursuit++;
+            if (st.pursuit > 22) outcome(false);
+          }
+          break;
+        }
+        case 'Rest': {
+          const r = env.restIdx;
+          if (r < 0) break;
+          if (me === r) {
+            a.energy = Math.min(100, a.energy + PARAMS.restGain);
+            if (++st.rested % 6 === 0) outcome(true);
+          } else {
+            stepTo(r); st.pursuit++;
+            if (st.pursuit > 25) outcome(false);
+          }
+          break;
+        }
+        case 'Gather':
+        case 'Align': {
+          const f = env.friend;
+          if (!f) break;
+          const cd = Math.max(Math.abs(f.x - a.x), Math.abs(f.y - a.y));
+          if (cd <= 1) {
+            st.contact++;
+            if (dec.ip === 'Gather') { if (st.pursuit > 0) outcome(true); }
+            else if (st.contact % 5 === 0) outcome(true);
+          } else {
+            stepTo(idx(f.x, f.y)); st.pursuit++;
+            if (st.pursuit > 16) outcome(false);
+          }
+          break;
+        }
+        case 'RestEarly': {
+          const r = env.restIdx;
+          if (r < 0) break;
+          if (me === r) {
+            a.energy = Math.min(100, a.energy + PARAMS.restGain);
+            if (++st.rested % 6 === 0) outcome(true);
+          } else {
+            stepTo(r); st.pursuit++;
+            if (st.pursuit > 25) outcome(false);
+          }
+          break;
+        }
+        case 'Picnic': {
+          const f = env.picnicIdx;
+          if (f < 0) break;
+          if (me === f) {
+            if (this.berries[f] > 0 && a.energy < 96) {
+              this.berries[f]--; a.energy = Math.min(100, a.energy + PARAMS.berryGain); a.ate++;
+              if (!st.ate) {
+                st.ate = true; const fr = env.friend, ok = !!fr && Math.max(Math.abs(fr.x - a.x), Math.abs(fr.y - a.y)) <= 3;
+                if (ok) { a.mind.loneliness = clamp(a.mind.loneliness - 0.2); fr.mind.loneliness = clamp(fr.mind.loneliness - 0.2); }   // EXTENSION: a shared meal is a strong bond
+                outcome(ok);
+              }
+            } else if (this.berries[f] === 0) outcome(false);
+          } else {
+            stepTo(f); st.pursuit++;
+            if (st.pursuit > 24) outcome(false);
+          }
+          break;
+        }
+        case 'Together': {
+          const tgi = env.togetherIdx;
+          if (tgi < 0) break;
+          const arrivedT = () => idx(a.x, a.y) === tgi || !this.fog[tgi];
+          if (!arrivedT()) { stepTo(tgi); st.pursuit++; }
+          if (arrivedT()) {
+            const fr = env.friend, near = !!fr && Math.max(Math.abs(fr.x - a.x), Math.abs(fr.y - a.y)) <= 4;
+            if (st.pursuit > 0) {
+              const ok = near && (st.revealed >= 1 || st.discovered > 0);
+              if (ok) { a.mind.loneliness = clamp(a.mind.loneliness - 0.06); fr.mind.loneliness = clamp(fr.mind.loneliness - 0.06); }   // EXTENSION: finding something together bonds
+              outcome(ok);
+            }
+          } else if (st.pursuit > 18) outcome(false);
+          break;
+        }
+        case 'Explore': {
+          const tg = env.exploreTarget;
+          if (!tg) {
+            if (st.stroll == null || me === st.stroll || st.pursuit > 20) { st.stroll = this.randomTile(P.dist, 4, 10); st.pursuit = 0; }
+            stepTo(st.stroll); st.pursuit++;
+            break;
+          }
+          const arrived = () => idx(a.x, a.y) === tg.idx || (tg.kind === 'fog' && !this.fog[tg.idx]);
+          if (!arrived()) { stepTo(tg.idx); st.pursuit++; }
+          if (arrived()) {
+            if (tg.kind === 'lure') {
+              this.lures = this.lures.filter(l => idx(l.x, l.y) !== tg.idx);
+              a.energy = Math.min(100, a.energy + 4);
+            }
+            if (st.pursuit > 0) outcome(st.revealed >= 2 || st.discovered > 0);
+          } else if (st.pursuit > 16) outcome(false);
+          break;
+        }
+      }
+    }
+
+    step() {
+      const t = ++this.tick;
+      const sIdx = Math.floor((t - 1) / SEASON_LEN) % 4;
+      if (sIdx !== this.seasonIdx) {
+        this.seasonIdx = sIdx; this.season = SEASONS[sIdx].id;
+        this.emitWorld('SEASON', `${SEASONS[sIdx].name} begins. ${SEASONS[sIdx].note}`, SEASONS[sIdx].name);
+      }
+      const rate = SEASONS[this.seasonIdx].regrow, cold = SEASONS[this.seasonIdx].cold;
+      if (t % TICKS_PER_DAY === 0 && this.effort < PARAMS.effortMax) this.effort++;
+      for (let i = 0; i < W * H; i++) {
+        if (this.patch[i] && this.berries[i] < 3) {
+          this.timer[i] += rate;
+          if (this.timer[i] >= 1) { this.berries[i]++; this.timer[i] = 0; }
+        }
+      }
+      this.lures = this.lures.filter(l => --l.ttl > 0);
+      if (t % (this.level === 2 ? 2 : 3) === 0) this.refog();
+
+      this.agents.forEach(a => { a.px = a.x; a.py = a.y; });
+      const snaps = this.agents.map(a => (a.sleep > 0 ? null : this.observe(a)));
+      this.agents.forEach((a, i) => {
+        const sn = snaps[i];
+        if (sn) a.env = { foodD: sn.foodD, restD: sn.restD, fogD: sn.fogD, lureD: sn.lureD, friendDist: sn.friendDist, friendId: sn.friend ? sn.friend.id : null, hazardProx: sn.hazardProx, foodProx: sn.foodProx, fogProx: sn.fogProx, lureProx: sn.lureProx };
+      });
+      const decs = this.agents.map((a, i) => (snaps[i] ? a.mind.update(snaps[i], t, a.name) : null));
+      const order = this.agents.map((_, i) => i);
+      const rot = t % order.length;
+      order.push(...order.splice(0, rot));
+
+      order.forEach(i => {
+        const a = this.agents[i];
+        a.age++;
+        if (a.sleep > 0) {
+          a.sleep--; a.energy -= 0.05;
+          if (a.sleep === 0) { a.energy = 30; this.emit(a, { kind: 'WAKE' }); }
+          return;
+        }
+        const dec = decs[i]; a.dec = dec;
+        dec.ev.forEach(e => this.emit(a, e));
+        if (dec.held) a.held = { t, info: dec.held };
+        this.execute(a, dec, snaps[i]);
+        a.energy -= PARAMS.metabolism * cold;
+        if (this.haz[idx(a.x, a.y)]) { a.energy -= PARAMS.hazard; a.hurt = t; }
+        if (this.agents.some(o => o !== a && Math.max(Math.abs(o.x - a.x), Math.abs(o.y - a.y)) <= 1)) a.energy += PARAMS.contactGain;
+        a.energy = clamp(a.energy, 0, 100);
+        if (a.energy <= 0) { a.sleep = 25; a.collapses++; a.st = { ip: null }; this.emit(a, { kind: 'FAINT' }); }
+      });
+
+      if (!this.finished) {
+        this.agents.forEach(a => {
+          const m = this.meters(a), sc = a.score;
+          const h = m.energy >= THRIVE_LINE, b = m.company >= 30, g = m.discovery >= 30;
+          sc.ticks++; if (h) sc.hOK++; if (b) sc.bOK++; if (g) sc.gOK++;
+          if (h && b && g && a.sleep === 0) sc.thrive++;
+        });
+        if (t >= YEAR_LEN) { this.finished = true; this.emitWorld('YEAR', 'The year is over.', 'Year'); }
+      }
+    }
+
+    /* the three life meters, 0-100: Energy (SURVIVE), Discovery (FLOURISH), Company (CONNECT) */
+    meters(a) {
+      return { energy: a.energy, discovery: 100 * (1 - a.mind.boredom), company: 100 * (1 - a.mind.loneliness) };
+    }
+    thriving(a) {
+      const m = this.meters(a);
+      return a.sleep === 0 && m.energy >= THRIVE_LINE && m.company >= 30 && m.discovery >= 30;
+    }
+
+    /* the mist slowly returns to tiles nobody is near, so the garden keeps changing */
+    refog() {
+      for (let k = 0; k < 12; k++) {
+        const x = 1 + Math.floor(this.rand() * (W - 2)), y = 1 + Math.floor(this.rand() * (H - 2)), i = idx(x, y);
+        if (this.wall[i] || this.fog[i]) continue;
+        if (this.agents.some(a => Math.max(Math.abs(a.x - x), Math.abs(a.y - y)) <= 5)) continue;
+        if (this.lures.some(l => l.x === x && l.y === y)) continue;
+        this.fog[i] = 1; return;
+      }
+    }
+
+    /* ---- Gardener tools: each placement costs 1 effort, removing is free ---- */
+    inBounds(x, y) { return x > 0 && y > 0 && x < W - 1 && y < H - 1; }
+    agentAt(x, y) { return this.agents.some(a => a.x === x && a.y === y); }
+    spend() { if (this.effort < 1) return false; this.effort -= 1; return true; }
+    patchCount() { let n = 0; for (let i = 0; i < W * H; i++) if (this.patch[i]) n++; return n; }
+    addBerries(x, y) {
+      if (!this.inBounds(x, y)) return 'Berries can only grow inside the garden.';
+      const i = idx(x, y);
+      if (this.wall[i] || this.haz[i] || this.rest[i]) return 'Berries need open ground.';
+      if (this.patch[i] && this.berries[i] >= 3) return 'That bush is already full.';
+      if (!this.patch[i] && this.patchCount() >= 18) return 'The garden already has plenty of bushes.';
+      if (!this.spend()) return NO_EFFORT;
+      this.patch[i] = 1; this.berries[i] = 3; this.planted[i] = 1;   // stays hidden under mist until a creature finds it
+      return '';
+    }
+    toggleWall(x, y) {
+      if (!this.inBounds(x, y)) return 'The outer hedge cannot be moved.';
+      const i = idx(x, y);
+      if (this.wall[i]) { this.wall[i] = 0; return ''; }
+      if (this.agentAt(x, y)) return 'A creature is standing there.';
+      if (this.patch[i] || this.rest[i]) return 'Not on a bush or a resting spot.';
+      if (!this.spend()) return NO_EFFORT;
+      this.wall[i] = 1; this.haz[i] = 0;
+      this.lures = this.lures.filter(l => idx(l.x, l.y) !== i);
+      return '';
+    }
+    toggleThorns(x, y) {
+      if (!this.inBounds(x, y)) return 'Thorns can only grow inside the garden.';
+      const i = idx(x, y);
+      if (this.haz[i]) { this.haz[i] = 0; return ''; }
+      if (this.wall[i] || this.patch[i] || this.rest[i]) return 'Thorns need open ground.';
+      if (!this.spend()) return NO_EFFORT;
+      this.haz[i] = 1;
+      return '';
+    }
+    addLure(x, y) {
+      if (!this.inBounds(x, y)) return 'Place the lantern inside the garden.';
+      const i = idx(x, y);
+      if (this.wall[i]) return 'Place the lantern on open ground.';
+      if (!this.spend()) return NO_EFFORT;
+      if (this.lures.length >= 2) this.lures.shift();
+      this.lures.push({ x, y, ttl: 90 });
+      this.fog[i] = 0;
+      return '';
+    }
+    fogLeft() { let n = 0; for (let i = 0; i < W * H; i++) if (this.fog[i] && !this.wall[i]) n++; return n; }
+    berryCount() { let n = 0; for (let i = 0; i < W * H; i++) if (!this.fog[i]) n += this.berries[i]; return n; }
+    visiblePatches() { let n = 0; for (let i = 0; i < W * H; i++) if (this.patch[i] && !this.fog[i]) n++; return n; }
+
+    /* plain-language suggestions for the Gardener. Deterministic and does not touch the world's random stream. */
+    advice() {
+      const out = [];
+      const free = (x, y, visibleOnly) => {
+        if (x < 1 || y < 1 || x > W - 2 || y > H - 2) return false;
+        const i = idx(x, y);
+        if (this.wall[i] || this.haz[i] || this.rest[i] || this.patch[i] || this.agentAt(x, y)) return false;
+        return !(visibleOnly && this.fog[i]);
+      };
+      const tileNear = (cx, cy, rmin, rmax, visibleOnly) => {
+        let best = null, bs = Infinity;
+        for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
+          const d = Math.max(Math.abs(x - cx), Math.abs(y - cy));
+          if (d < rmin || d > rmax || !free(x, y, visibleOnly)) continue;
+          const sc = d + ((x * 31 + y * 17) % 5) * 0.01;
+          if (sc < bs) { bs = sc; best = { x, y }; }
+        }
+        return best;
+      };
+      this.agents.forEach(a => {
+        if (a.sleep > 0 || !a.env) return;
+        const m = this.meters(a), e = a.env, name = a.name;
+        const friend = this.agents.find(o => o.id === e.friendId);
+        if (m.energy < 40 && !(e.foodD <= 6)) {
+          const spot = tileNear(a.x, a.y, 1, 3, true) || tileNear(a.x, a.y, 1, 6, true);
+          if (spot) out.push({ who: a.id, need: 'energy', urgency: m.energy < 25 ? 3 : 2, tool: 'berries', x: spot.x, y: spot.y,
+            text: `${name} is hungry (energy ${Math.round(m.energy)}) and no berries are close. Plant a berry bush near ${name}.` });
+        } else if (m.energy < 60 && e.hazardProx > 0.4) {
+          let best = null, bd = Infinity;
+          for (let i = 0; i < W * H; i++) if (this.haz[i]) { const d = Math.max(Math.abs(i % W - a.x), Math.abs(((i / W) | 0) - a.y)); if (d < bd) { bd = d; best = i; } }
+          if (best != null) out.push({ who: a.id, need: 'energy', urgency: 2, tool: 'thorns', x: best % W, y: (best / W) | 0,
+            text: `Thorns are close to ${name} and they drain energy. Clear the thorns.` });
+        }
+        if (m.company < 40 && friend && e.friendDist > 4) {
+          const spot = tileNear(Math.round((a.x + friend.x) / 2), Math.round((a.y + friend.y) / 2), 0, 3, true);
+          if (spot) out.push({ who: a.id, need: 'company', urgency: m.company < 25 ? 2 : 1, tool: 'berries', x: spot.x, y: spot.y,
+            text: `${name} feels lonely and ${friend.name} is far away. Plant berries between them so they meet.` });
+        }
+        if (m.discovery < 40) {
+          let best = null, bs = Infinity;
+          for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
+            const i = idx(x, y);
+            if (!this.fog[i] || this.wall[i] || this.patch[i]) continue;
+            const d = Math.max(Math.abs(x - a.x), Math.abs(y - a.y));
+            if (d < 4) continue;
+            if (d < bs) { bs = d; best = { x, y }; }
+          }
+          if (best) out.push({ who: a.id, need: 'discovery', urgency: m.discovery < 25 ? 2 : 1, tool: 'berries', x: best.x, y: best.y,
+            text: `${name} is bored: there is little left to discover. Plant a seed in the mist for ${name} to find.` });
+        }
+      });
+      const toNext = SEASON_LEN - (this.tick % SEASON_LEN);
+      const nxt = SEASONS[(this.seasonIdx + 1) % 4];
+      if ((nxt.id === 'autumn' || nxt.id === 'winter') && toNext <= 80 && this.visiblePatches() < 11 && !this.finished) {
+        const spot = tileNear(9, 9, 1, 5, true);
+        if (spot) out.push({ who: 'garden', need: 'season', urgency: nxt.id === 'winter' ? 2 : 1, tool: 'berries', x: spot.x, y: spot.y,
+          text: `${nxt.name} begins in ${Math.ceil(toNext / TICKS_PER_DAY)} days. ${nxt.note} Plant extra berry bushes now.` });
+      }
+      if (this.season === 'winter' && this.berryCount() < 8) {
+        const spot = tileNear(9, 9, 1, 5, true);
+        if (spot) out.push({ who: 'garden', need: 'season', urgency: 2, tool: 'berries', x: spot.x, y: spot.y,
+          text: 'Berries are running low in the middle of winter. Plant a bush where the creatures can reach it.' });
+      }
+      out.sort((p, q) => q.urgency - p.urgency);
+      const seen = new Set(), res = [];
+      out.forEach(o => { const k = o.who + o.need; if (!seen.has(k)) { seen.add(k); res.push(o); } });
+      return res.slice(0, 4);
+    }
+
+    /* end-of-year summary */
+    summary() {
+      const per = this.agents.map(a => {
+        const sc = a.score, n = Math.max(1, sc.ticks);
+        return { id: a.id, name: a.name, thrive: sc.thrive / n, energyOK: sc.hOK / n, discoveryOK: sc.gOK / n, companyOK: sc.bOK / n,
+          faints: a.collapses, held: a.heldCount, noticed: a.noticedCount };
+      });
+      const avg = k => per.reduce((x, p) => x + p[k], 0) / per.length;
+      const overall = avg('thrive');
+      const c = this.cuts;
+      const stars = overall >= c[2] ? 3 : overall >= c[1] ? 2 : overall >= c[0] ? 1 : 0;
+      const needs = { energy: avg('energyOK'), discovery: avg('discoveryOK'), company: avg('companyOK') };
+      let weakest = 'energy';
+      Object.keys(needs).forEach(k => { if (needs[k] < needs[weakest]) weakest = k; });
+      return { per, overall, stars, needs, weakest };
+    }
+  }
+
+  /* headless helper for comparison studies */
+  function run(seed, ticks, mode, tweak) {
+    const w = new World(seed, { mode });
+    if (tweak) tweak(w);
+    for (let i = 0; i < ticks; i++) w.step();
+    return w;
+  }
+
+  return { NEW_HABITS, PARTS, CHARS_L2, IP_GERUND, IP_URGE, THRIVE_LINE, SEASONS, SEASON_LEN, YEAR_LEN, TICKS_PER_DAY, W, H, MAP, TERMS, IP_DEFS, IP_BY_ID, PARAMS, CHARS, World, Mind, run, idx };
+})();
+
+
+
+</script>
+<script>
+(function () {
+  'use strict';
+  const E = Engine, TERMS = E.TERMS, N = E.W, T = 32, LINE = E.THRIVE_LINE;
+  const COL = { SURVIVE: '#f2725f', FLOURISH: '#f3bf42', CONNECT: '#43cbc0' };
+  const BODY = { finn: '#2aa79f', mira: '#e0683f', bo: '#eab634', luna: '#a493f2', ori: '#5aa9e6' };
+  const TRAIT = { finn: 'Loves company', mira: 'Plays it safe', bo: 'Loves to explore', luna: 'Gentle and social', ori: 'Curious wanderer' };
+  const PAPER = { finn: 'Built-in lean: CONNECT', mira: 'Built-in lean: SURVIVE', bo: 'Built-in lean: FLOURISH', luna: 'Built-in lean: CONNECT, a little SURVIVE', ori: 'Built-in lean: FLOURISH, a little CONNECT' };
+  const NEEDS = { SURVIVE: { key: 'energy', label: 'Energy' }, FLOURISH: { key: 'discovery', label: 'Discovery' }, CONNECT: { key: 'company', label: 'Company' } };
+  const HELP = {
+    SURVIVE: 'Plant berry bushes near it, clear thorns in its way, and keep resting spots reachable.',
+    FLOURISH: 'Plant seeds in the mist for it to find, and open hedges that block new areas.',
+    CONNECT: 'Remove hedges that split the friends, and plant berries where they can meet.'
+  };
+  const HINTS = {
+    inspect: 'Look: click a creature to see what it wants and why. Looking is free.',
+    berries: 'Trowel: click open ground to plant a berry bush (1 effort). Plant one in the mist to give the creatures something to discover.',
+    hedge: 'Shears: click open ground to place a hedge (1 effort). Hedges block paths. Click a hedge to remove it (free).',
+    thorns: 'Briar: click open ground to grow thorns (1 effort). Thorns drain energy, so creatures avoid them. Click thorns to clear them (free).',
+    glimmer: 'Lantern: click to light a lantern (1 effort). Curious creatures walk toward it for a while. It is worth little, and creatures learn to ignore it.'
+  };
+  const INK = '#0b1512';
+  const $ = id => document.getElementById(id);
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const dayOf = t => Math.floor(Math.max(0, t - 1) / E.TICKS_PER_DAY) + 1;
+
+  const cv = $('garden'), ctx = cv.getContext('2d');
+  const DPR = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = 640 * DPR; cv.height = 640 * DPR;
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+  let level = 1;
+  let world = new E.World(7, { level });
+  let playing = false, speed = 1, tool = 'inspect', selected = 'finn', hover = null, pulse = null;
+  let acc = 0, last = performance.now();
+  const TICK_MS = 200;
+  let seenEvent = 0, logKey = '', toastTimer = 0, hintTimer = 0, endShown = false, free = false;
+  let overlayMode = null, resumeAfter = false, advCache = [], advKey = '';
+  let drawerOpen = false, drawerView = 'wants', resumeDrawer = false;
+  const att = { notebook: 0, story: 0, book: 0, mind: 0 };
+  let storySeen = 0, bookSeen = 0, lastUrgKey = '', nbSeenKey = '';
+  const KEYEV = new Set(['HELD', 'REFLECT', 'HABIT', 'DROP', 'FAINT', 'SEASON']);
+  const fogA = new Float32Array(N * N);
+  const resetFog = () => { for (let i = 0; i < N * N; i++) fogA[i] = world.fog[i] ? 0.9 : 0; };
+  resetFog();
+
+  const hash = (x, y, k) => { let h = (x * 374761393 + y * 668265263 + (k || 0) * 2147483647) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
+  const agent = id => world.agents.find(a => a.id === id);
+  function rr(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+
+  /* ------------------------------------------------------------ drawing */
+  function drawGround() {
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+      const i = y * N + x, r = hash(x, y);
+      ctx.fillStyle = r < 0.33 ? '#cbd9b8' : r < 0.66 ? '#c4d4b0' : '#d0ddbd';
+      ctx.fillRect(x * T, y * T, T, T);
+      if (r > 0.55) {
+        ctx.strokeStyle = 'rgba(90,130,80,.35)'; ctx.lineWidth = 1.4; ctx.beginPath();
+        const fx = x * T + 6 + hash(x, y, 1) * 20, fy = y * T + 8 + hash(x, y, 2) * 18;
+        ctx.moveTo(fx, fy); ctx.lineTo(fx - 1.5, fy - 4); ctx.moveTo(fx + 3, fy); ctx.lineTo(fx + 4, fy - 4); ctx.stroke();
+      }
+      if (world.haz[i]) {
+        ctx.fillStyle = '#b9a2a4'; ctx.fillRect(x * T, y * T, T, T);
+        ctx.fillStyle = '#5c3d4e';
+        [[9, 22], [20, 24], [15, 12], [24, 11], [7, 10]].forEach(([tx, ty], k) => {
+          const ox = x * T + tx + (hash(x, y, k + 3) - .5) * 4, oy = y * T + ty;
+          ctx.beginPath(); ctx.moveTo(ox - 3.5, oy); ctx.lineTo(ox, oy - 8); ctx.lineTo(ox + 3.5, oy); ctx.closePath(); ctx.fill();
+        });
+      }
+    }
+  }
+  function drawRest(x, y, time) {
+    const cx = (x + .5) * T, cy = (y + .5) * T;
+    ctx.fillStyle = 'rgba(255,255,225,' + (0.28 + 0.08 * Math.sin(time * 2)) + ')';
+    ctx.beginPath(); ctx.arc(cx, cy, 15.5, 0, 7); ctx.fill();
+    ctx.fillStyle = '#8b6b4a'; ctx.strokeStyle = INK; ctx.lineWidth = 2;
+    rr(cx - 12, cy - 6, 24, 13, 6); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#6da057'; rr(cx - 8, cy - 8, 12, 5, 2.5); ctx.fill();
+    ctx.strokeStyle = '#5a4230'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(cx + 8, cy, 3.2, 0, 7); ctx.stroke();
+  }
+  function drawWall(x, y) {
+    const px = x * T, py = y * T;
+    ctx.fillStyle = '#2b4b36'; rr(px + 1, py + 2, T - 2, T - 2, 7); ctx.fill();
+    ctx.fillStyle = '#3a6547'; rr(px + 1, py + 1, T - 2, T - 6, 7); ctx.fill();
+    ctx.fillStyle = '#4f8058';
+    for (let k = 0; k < 4; k++) { ctx.beginPath(); ctx.arc(px + 6 + hash(x, y, k) * 20, py + 6 + hash(x, y, k + 9) * 15, 2.4, 0, 7); ctx.fill(); }
+  }
+  function drawBush(x, y, n) {
+    const cx = (x + .5) * T, cy = (y + .5) * T + 1;
+    ctx.fillStyle = n ? '#4c8b55' : '#86ac84'; ctx.strokeStyle = '#2b5a3a'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(cx, cy, 11.5, 0, 7); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = n ? '#5fa065' : '#9bbf98'; ctx.beginPath(); ctx.arc(cx - 3, cy - 4, 5, 0, 7); ctx.fill();
+    [[-5, -2], [5, -3], [1, 5]].slice(0, n).forEach(([bx, by]) => {
+      ctx.fillStyle = '#d64545'; ctx.strokeStyle = '#7d1f24'; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.arc(cx + bx, cy + by, 3.4, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.beginPath(); ctx.arc(cx + bx - 1, cy + by - 1, 1, 0, 7); ctx.fill();
+    });
+  }
+  function drawSeed(x, y) {   // the Gardener's own marker for seeds hidden under the mist
+    const cx = (x + .5) * T, cy = (y + .5) * T;
+    ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.beginPath(); ctx.arc(cx, cy, 10, 0, 7); ctx.fill();
+    ctx.strokeStyle = '#3f7a4c'; ctx.lineWidth = 2; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(cx, cy + 6); ctx.lineTo(cx, cy - 1); ctx.stroke();
+    ctx.fillStyle = '#5fa065';
+    ctx.beginPath(); ctx.ellipse(cx - 3.5, cy - 2.5, 4, 2.2, -0.6, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(cx + 3.5, cy - 3.5, 4, 2.2, 0.6, 0, 7); ctx.fill();
+  }
+  function drawLure(l, time) {   // a lantern
+    const cx = (l.x + .5) * T, cy = (l.y + .5) * T, f = 1 + 0.1 * Math.sin(time * 7);
+    ctx.globalAlpha = Math.min(1, l.ttl / 15);
+    const g = ctx.createRadialGradient(cx, cy, 2, cx, cy, 24 * f);
+    g.addColorStop(0, 'rgba(255,225,120,.65)'); g.addColorStop(1, 'rgba(255,225,120,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, 24 * f, 0, 7); ctx.fill();
+    ctx.strokeStyle = '#5a4a30'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(cx, cy - 8, 4, Math.PI, 0); ctx.stroke();
+    ctx.fillStyle = '#7a6a4a'; rr(cx - 7, cy - 8, 14, 4, 2); ctx.fill();
+    ctx.fillStyle = '#ffe9a6'; ctx.strokeStyle = '#5a4230'; ctx.lineWidth = 1.6; rr(cx - 6, cy - 4, 12, 13, 3); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#ff9d3c'; ctx.beginPath(); ctx.moveTo(cx, cy + 6); ctx.quadraticCurveTo(cx - 4, cy + 1, cx, cy - 3 * f); ctx.quadraticCurveTo(cx + 4, cy + 1, cx, cy + 6); ctx.fill();
+    ctx.fillStyle = '#7a6a4a'; rr(cx - 7, cy + 8, 14, 3.5, 1.5); ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+  function drawFog() {
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+      const i = y * N + x, target = world.fog[i] ? 0.9 : 0;
+      fogA[i] += (target - fogA[i]) * (reduceMotion ? 1 : 0.16);
+      if (fogA[i] < 0.02) continue;
+      ctx.fillStyle = 'rgba(226,235,229,' + fogA[i].toFixed(3) + ')';
+      ctx.fillRect(x * T, y * T, T, T);
+      if (fogA[i] > 0.5) {
+        ctx.fillStyle = 'rgba(255,255,255,' + (0.25 * fogA[i]).toFixed(3) + ')';
+        ctx.beginPath(); ctx.arc(x * T + 8 + hash(x, y, 5) * 16, y * T + 8 + hash(x, y, 6) * 16, 7 + hash(x, y, 7) * 5, 0, 7); ctx.fill();
+      }
+    }
+  }
+  function drawSeason(time) {
+    const s = world.seasonIdx;
+    if (s === 1) { ctx.fillStyle = 'rgba(255,214,110,.08)'; ctx.fillRect(0, 0, 640, 640); }
+    if (s === 2) {
+      ctx.fillStyle = 'rgba(224,140,60,.13)'; ctx.fillRect(0, 0, 640, 640);
+      if (!reduceMotion) for (let k = 0; k < 16; k++) {
+        const sx = (hash(k, 11) * 640 + Math.sin(time * 0.8 + k) * 22 + 640) % 640, sy = (hash(k, 12) * 640 + time * (18 + hash(k, 13) * 16)) % 640;
+        ctx.fillStyle = ['#d9772b', '#c9482f', '#e8b13a'][k % 3]; ctx.beginPath(); ctx.ellipse(sx, sy, 4, 2.2, time + k, 0, 7); ctx.fill();
+      }
+    }
+    if (s === 3) {
+      ctx.fillStyle = 'rgba(190,214,245,.2)'; ctx.fillRect(0, 0, 640, 640);
+      if (!reduceMotion) { ctx.fillStyle = 'rgba(255,255,255,.88)'; for (let k = 0; k < 46; k++) { const sx = (hash(k, 1) * 640 + Math.sin(time + k) * 10 + 640) % 640, sy = (hash(k, 2) * 640 + time * (22 + hash(k, 3) * 24)) % 640; ctx.beginPath(); ctx.arc(sx, sy, 1.4 + hash(k, 4) * 1.2, 0, 7); ctx.fill(); } }
+    }
+  }
+
+  /* what a creature is doing, in plain words */
+  function exploreKind(a) {
+    const e = a.env; if (!e) return 'mist';
+    if (e.lureD < Infinity && e.lureProx >= 0.7 * e.fogProx && e.lureProx > 0) return 'lantern';
+    if (e.fogD < Infinity) return 'mist';
+    return 'wander';
+  }
+  function actionText(a) {
+    if (a.sleep > 0) return 'Asleep';
+    const d = a.dec; if (!d) return '';
+    const f = agent(a.env && a.env.friendId);
+    switch (d.ip) {
+      case 'GetFood': return 'Looking for berries';
+      case 'Rest': return 'Resting';
+      case 'Gather': return f ? 'Walking to ' + f.name : 'Walking to a friend';
+      case 'Align': return f ? 'Staying beside ' + f.name : 'Staying with a friend';
+      case 'Explore': { const k = exploreKind(a); return k === 'lantern' ? 'Following the lantern' : k === 'mist' ? 'Exploring the mist' : 'Wandering'; }
+      case 'RestEarly': return 'Resting before getting tired';
+      case 'Picnic': return f ? 'Going to eat with ' + f.name : 'Eating with a friend';
+      case 'Together': return f ? 'Exploring with ' + f.name : 'Exploring with a friend';
+    }
+    return '';
+  }
+  function bubbleText(a) {
+    if (a.sleep > 0) return 'Zzz…';
+    const d = a.dec; if (!d) return '';
+    if (a.held && world.tick - a.held.t < 6) return 'Not this time.';
+    switch (d.ip) {
+      case 'GetFood': return a.energy < 30 ? 'So hungry!' : 'Berries!';
+      case 'Rest': return 'Rest…';
+      case 'Gather': return 'Where is everyone?';
+      case 'Align': return 'Together';
+      case 'Explore': return exploreKind(a) === 'lantern' ? 'Ooh, shiny!' : 'What is there?';
+      case 'RestEarly': return 'A little rest';
+      case 'Picnic': return 'Snack together!';
+      case 'Together': return 'Come with me!';
+    }
+    return '';
+  }
+
+  function drawChar(a, alpha, time) {
+    const e = alpha < 1 ? (1 - Math.pow(1 - alpha, 2)) : 1;
+    const gx = a.px + (a.x - a.px) * e, gy = a.py + (a.y - a.py) * e;
+    const moving = a.x !== a.px || a.y !== a.py;
+    const heldNow = a.held && world.tick - a.held.t < 8;
+    const cx = (gx + .5) * T + (heldNow && !reduceMotion ? Math.sin(time * 34) * 1.6 : 0);
+    const cy = (gy + .5) * T + (moving && alpha < 1 && !reduceMotion ? -Math.abs(Math.sin(alpha * Math.PI)) * 3 : 0);
+    const asleep = a.sleep > 0, m = a.mind;
+    ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(cx, (gy + .5) * T + 11, 11, 4, 0, 0, 7); ctx.fill();
+
+    const dom = m.dom, ringA = 0.6 + 0.4 * m.S[dom];
+    ctx.save(); ctx.translate(cx, cy); ctx.lineCap = 'round';
+    const ring = (r, w, dash, col) => {
+      ctx.setLineDash(dash); ctx.strokeStyle = INK; ctx.globalAlpha = 0.55; ctx.lineWidth = w + 2.6;
+      ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.stroke();
+      ctx.globalAlpha = ringA; ctx.strokeStyle = col; ctx.lineWidth = w;
+      ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.stroke(); ctx.globalAlpha = 1; ctx.setLineDash([]);
+    };
+    if (dom === 'SURVIVE') ring(17.5, 3.2, [], COL.SURVIVE);
+    else if (dom === 'FLOURISH') ring(17.5, 3.6, [0.1, 6.2], COL.FLOURISH);
+    else { ring(15.6, 2.2, [], COL.CONNECT); ring(19.6, 2.2, [], COL.CONNECT); }
+
+    ctx.lineWidth = 2; ctx.strokeStyle = INK; ctx.lineJoin = 'round';
+    let ey = -1.5, eyeX = 4.2;
+    if (a.id === 'finn') {
+      ctx.fillStyle = BODY.finn; ctx.beginPath(); ctx.ellipse(0, 1, 11, 10.5, 0, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#f2ead6'; ctx.beginPath(); ctx.ellipse(0, 5, 6.5, 4.6, 0, 0, 7); ctx.fill();
+      ey = -2;
+    } else if (a.id === 'luna') {
+      ctx.fillStyle = BODY.luna;
+      ctx.beginPath(); ctx.moveTo(-9.5, -4); ctx.lineTo(-8, -15); ctx.lineTo(-1.5, -8.5); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(9.5, -4); ctx.lineTo(8, -15); ctx.lineTo(1.5, -8.5); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(0, 1.5, 11.2, 10.2, 0, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#efe9ff'; ctx.beginPath(); ctx.arc(0, 6.3, 4.6, Math.PI * 0.05, Math.PI * 0.95); ctx.fill();
+      ey = -1.5;
+    } else if (a.id === 'ori') {
+      ctx.fillStyle = BODY.ori; ctx.beginPath(); ctx.moveTo(0, -14); ctx.quadraticCurveTo(13, -3, 10.5, 3); ctx.quadraticCurveTo(7, 12, 0, 12.5); ctx.quadraticCurveTo(-7, 12, -10.5, 3); ctx.quadraticCurveTo(-13, -3, 0, -14); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#5fa065'; ctx.beginPath(); ctx.ellipse(4, -15.5, 4.6, 2.4, -0.5, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#d5ecfb'; ctx.beginPath(); ctx.ellipse(0, 6, 5, 4, 0, 0, 7); ctx.fill();
+      ey = -2.5; eyeX = 3.8;
+    } else if (a.id === 'mira') {
+      ctx.fillStyle = BODY.mira; rr(-11, -8, 22, 20, 7); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#a04426'; ctx.beginPath(); ctx.moveTo(-11, -1); ctx.arc(0, -1, 11, Math.PI, 0); ctx.lineTo(11, -1); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = 'rgba(11,21,18,.45)'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(0, -12); ctx.lineTo(0, -1); ctx.moveTo(-6, -9); ctx.lineTo(-6, -1); ctx.moveTo(6, -9); ctx.lineTo(6, -1); ctx.stroke();
+      ctx.strokeStyle = INK; ctx.lineWidth = 2;
+      ey = 3.5;
+    } else {
+      const bob = reduceMotion ? 0 : Math.sin(time * 9) * (moving ? 2 : 0.8);
+      ctx.strokeStyle = INK; ctx.lineWidth = 4.6; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(-3, -12); ctx.lineTo(-4, -17 + bob); ctx.moveTo(0, -12.5); ctx.lineTo(0, -19 + bob); ctx.moveTo(3, -12); ctx.lineTo(4.5, -17 + bob); ctx.stroke();
+      ctx.strokeStyle = '#f6d97a'; ctx.lineWidth = 2.2;
+      ctx.beginPath(); ctx.moveTo(-3, -12); ctx.lineTo(-4, -17 + bob); ctx.moveTo(0, -12.5); ctx.lineTo(0, -19 + bob); ctx.moveTo(3, -12); ctx.lineTo(4.5, -17 + bob); ctx.stroke();
+      ctx.strokeStyle = INK; ctx.lineWidth = 2;
+      ctx.fillStyle = BODY.bo; ctx.beginPath(); ctx.ellipse(0, 0, 9.6, 12.6, 0, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#f6e3a0'; ctx.beginPath(); ctx.ellipse(0, 5.5, 5.4, 5, 0, 0, 7); ctx.fill();
+      ey = -4; eyeX = 3.8;
+    }
+    const look = a.faceX * 1.3;
+    if (asleep) {
+      ctx.strokeStyle = INK; ctx.lineWidth = 1.8; ctx.beginPath();
+      ctx.moveTo(-eyeX - 2.5, ey); ctx.lineTo(-eyeX + 2.5, ey); ctx.moveTo(eyeX - 2.5, ey); ctx.lineTo(eyeX + 2.5, ey); ctx.stroke();
+    } else {
+      [-eyeX, eyeX].forEach(ex => {
+        ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(ex, ey, 3.3, 0, 7); ctx.fill();
+        ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(ex + look, ey + 0.3, 1.7, 0, 7); ctx.fill();
+      });
+      if (heldNow) {
+        ctx.strokeStyle = INK; ctx.lineWidth = 1.8; ctx.beginPath();
+        ctx.moveTo(-eyeX - 3, ey - 6); ctx.lineTo(-eyeX + 2.5, ey - 4); ctx.moveTo(eyeX + 3, ey - 6); ctx.lineTo(eyeX - 2.5, ey - 4); ctx.stroke();
+      }
+    }
+    ctx.strokeStyle = INK; ctx.lineWidth = 1.8; ctx.beginPath();
+    const my = ey + 6.2;
+    if (asleep || heldNow) { ctx.moveTo(-2.5, my); ctx.lineTo(2.5, my); }
+    else if (a.energy < 25) { ctx.arc(0, my + 2.4, 2.8, Math.PI * 1.15, Math.PI * 1.85); }
+    else { ctx.arc(0, my - 1.6, 3, Math.PI * 0.2, Math.PI * 0.8); }
+    ctx.stroke();
+    // thriving light: green when all three meters are above the line, red when one is not
+    ctx.fillStyle = world.thriving(a) ? '#7bd88f' : (asleep ? '#c8b6ff' : '#ff8a73');
+    ctx.strokeStyle = INK; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.arc(15, 14, 4.2, 0, 7); ctx.fill(); ctx.stroke();
+    ctx.restore();
+
+    const txt = bubbleText(a);
+    if (txt) {
+      ctx.font = '600 11px Figtree, system-ui, sans-serif';
+      const w = ctx.measureText(txt).width + 14, bx = Math.max(4, Math.min(640 - w - 4, cx - w / 2)), by = Math.max(3, cy - 43);
+      ctx.fillStyle = 'rgba(255,255,255,.94)'; ctx.strokeStyle = INK; ctx.lineWidth = 1.4;
+      rr(bx, by, w, 18, 9); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx - 3, by + 18); ctx.lineTo(cx, by + 23); ctx.lineTo(cx + 3, by + 18); ctx.fillStyle = 'rgba(255,255,255,.94)'; ctx.fill();
+      ctx.fillStyle = '#0f201c'; ctx.textBaseline = 'middle'; ctx.fillText(txt, bx + 7, by + 9.5);
+    }
+    if (selected === a.id) {
+      const s = 25;
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.4; ctx.lineCap = 'round'; ctx.beginPath();
+      [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([sx, sy]) => { ctx.moveTo(cx + sx * s, cy + sy * (s - 8)); ctx.lineTo(cx + sx * s, cy + sy * s); ctx.lineTo(cx + sx * (s - 8), cy + sy * s); });
+      ctx.stroke();
+    }
+  }
+
+  function render(alpha, time) {
+    ctx.clearRect(0, 0, 640, 640);
+    drawGround();
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) { const i = y * N + x; if (world.rest[i]) drawRest(x, y, time); }
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) { const i = y * N + x; if (world.wall[i]) drawWall(x, y); }
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) { const i = y * N + x; if (world.patch[i] && !world.fog[i]) drawBush(x, y, world.berries[i]); }
+    world.lures.forEach(l => { if (!world.fog[l.y * N + l.x]) drawLure(l, time); });
+    drawFog();
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) { const i = y * N + x; if (world.planted[i] && world.patch[i] && world.fog[i]) drawSeed(x, y); }
+    drawSeason(time);
+    if (hover && tool !== 'inspect') {
+      ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.strokeStyle = 'rgba(15,32,28,.6)'; ctx.lineWidth = 1.5;
+      ctx.fillRect(hover.x * T, hover.y * T, T, T); ctx.strokeRect(hover.x * T + .75, hover.y * T + .75, T - 1.5, T - 1.5);
+    }
+    if (pulse) {
+      if (performance.now() > pulse.until) pulse = null;
+      else {
+        const px = (pulse.x + .5) * T, py = (pulse.y + .5) * T, r = 17 + (reduceMotion ? 0 : 4 * Math.sin(time * 6));
+        ctx.strokeStyle = INK; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(px, py, r, 0, 7); ctx.stroke();
+        ctx.strokeStyle = '#f3bf42'; ctx.lineWidth = 3.4; ctx.beginPath(); ctx.arc(px, py, r, 0, 7); ctx.stroke();
+      }
+    }
+    world.agents.forEach(a => drawChar(a, alpha, time));
+  }
+
+  /* --------------------------------------------------------- creature cards */
+  const meterRow = t => `<div class="mrow meter" data-k="${NEEDS[t].key}" style="--c:var(--${t.toLowerCase()})"><span class="sw s-${t.toLowerCase()}" style="--c:var(--${t.toLowerCase()})"></span><span class="lb">${NEEDS[t].label}</span><span class="track"><b></b><span class="line"></span></span><span class="v">0</span></div>`;
+  const wantRow = t => `<div class="mrow want" data-t="${t}" style="--c:var(--${t.toLowerCase()})"><span class="sw s-${t.toLowerCase()}" style="--c:var(--${t.toLowerCase()})"></span><span class="lb">${NEEDS[t].label}<small>${t}</small></span><span class="track"><b></b></span><span class="v">0%</span></div>`;
+  const cardsEl = $('cards');
+  let cardEls = {};
+  function buildCards() {
+    cardsEl.innerHTML = world.agents.map(a => `
+    <div class="card" data-id="${a.id}" tabindex="0" role="button" aria-label="Look inside ${a.name}">
+      <div class="card-top">
+        <span class="glyph ${a.id}" style="--gc:${BODY[a.id]}"></span>
+        <span class="name">${a.name}</span><span class="trait" title="${PAPER[a.id]}">${TRAIT[a.id]}</span>
+        <span class="status">–</span>
+      </div>
+      <p class="h" style="margin-bottom:-2px">How it is doing <span style="text-transform:none;letter-spacing:0;font-weight:500">(above the white line is good)</span></p>
+      ${TERMS.map(meterRow).join('')}
+      <div class="doing"></div>
+      <div class="more" hidden>
+        <p class="h">What it wants right now</p>
+        ${TERMS.map(wantRow).join('')}
+        <p class="cap">The tallest bar wins and decides what it does. These bars show what it <i>wants</i>, not how well things are going.</p>
+        <p class="why"></p>
+        <p class="help"></p>
+      </div>
+    </div>`).join('');
+    cardEls = {};
+    world.agents.forEach(a => { cardEls[a.id] = cardsEl.querySelector(`[data-id="${a.id}"]`); });
+  }
+  buildCards();
+
+  /* roster: one portrait per creature, always on screen */
+  const rosterEl = $('roster');
+  let rosterEls = {};
+  function buildRoster() {
+    rosterEl.innerHTML = world.agents.map(a => `<button class="pchip" data-id="${a.id}" aria-label="Look inside ${a.name}">
+      <span class="glyph ${a.id}" style="--gc:${BODY[a.id]}"></span><span class="nm">${a.name}</span>
+      <span class="mini" aria-hidden="true"><i data-k="energy" style="--c:var(--survive)"><b></b></i><i data-k="discovery" style="--c:var(--flourish)"><b></b></i><i data-k="company" style="--c:var(--connect)"><b></b></i></span>
+      <span class="st">–</span></button>`).join('');
+    rosterEls = {};
+    world.agents.forEach(a => { rosterEls[a.id] = rosterEl.querySelector(`[data-id="${a.id}"]`); });
+  }
+  buildRoster();
+  const lowFlag = {};
+  function updateRoster() {
+    world.agents.forEach(a => {
+      const el = rosterEls[a.id]; if (!el) return;
+      const m = world.meters(a), st = statusOf(a);
+      el.classList.toggle('sel', a.id === selected);
+      const nowT = performance.now();
+      if (st.cls === 'low' && !lowFlag[a.id]) att['r' + a.id] = nowT + 6000;   // pulse once when it starts to struggle
+      lowFlag[a.id] = st.cls === 'low';
+      el.classList.toggle('low', st.cls === 'low');
+      el.classList.toggle('attn', nowT < (att['r' + a.id] || 0) && !(drawerOpen && drawerView === 'wants' && selected === a.id));
+      el.querySelectorAll('.mini i').forEach(i => { const v = m[i.dataset.k]; i.firstChild.style.width = clamp(v, 0, 100) + '%'; i.classList.toggle('low', v < LINE); });
+      const se = el.querySelector('.st'); se.className = 'st ' + st.cls; se.textContent = st.text;
+    });
+  }
+  rosterEl.addEventListener('click', e => {
+    const c = e.target.closest('.pchip'); if (!c) return;
+    selectAgent(c.dataset.id);
+    openDrawer(drawerOpen && ['wants', 'book', 'mind'].includes(drawerView) ? drawerView : 'wants');
+  });
+
+  function statusOf(a) {
+    if (a.sleep > 0) return { cls: 'sleep', text: 'Asleep' };
+    const m = world.meters(a), low = [];
+    if (m.energy < LINE) low.push('Energy'); if (m.discovery < LINE) low.push('Discovery'); if (m.company < LINE) low.push('Company');
+    return low.length ? { cls: 'low', text: 'Needs ' + low.join(' + ') } : { cls: 'ok', text: 'Thriving' };
+  }
+  function whyText(a) {
+    if (a.sleep > 0) return 'It ran out of energy and is asleep. It will wake up soon, hungry.';
+    const d = a.dec; if (!d) return 'Press Play to see what it wants.';
+    const m = a.mind, mt = world.meters(a), e = a.env || {}, dom = m.dom, bits = [];
+    if (dom === 'SURVIVE') bits.push(mt.energy < 45 ? `Its energy is low (${Math.round(mt.energy)}), so staying alive comes first.` : (e.hazardProx > 0.4 ? 'Thorns are close, so it plays it safe.' : 'Its energy is fine, but it likes to stay near food and rest.'));
+    else if (dom === 'FLOURISH') bits.push(mt.discovery < 45 ? 'It feels bored and wants to see something new.' : `It has energy to spare (${Math.round(mt.energy)}), so it wants to explore.`);
+    else bits.push(mt.company < 50 ? 'It feels lonely and wants to be with its friends.' : 'It enjoys its friends, so it stays close to them.');
+    if (a.held && world.tick - a.held.t < 10) bits.push(`It is tempted to ${E.IP_URGE[a.held.info.wantIp]}, but it is holding back. That is self-control.`);
+    else { const res = m.defs.filter(x => m.ip[x.id].resisting); if (res.length) bits.push(`It is holding back from ${E.IP_GERUND[res[0].id]}, because that has not been working.`); }
+    if (d.ip && E.IP_BY_ID[d.ip] && E.IP_BY_ID[d.ip].learned) bits.push(`It is using a habit it built itself: ${E.IP_BY_ID[d.ip].label}.`);
+    return `Wants ${NEEDS[dom].label} most (${Math.round(m.S[dom] * 100)}%). ` + bits.join(' ');
+  }
+  function updateCards() {
+    world.agents.forEach(a => {
+      const el = cardEls[a.id], m = world.meters(a), mind = a.mind;
+      el.classList.toggle('sel', a.id === selected);
+      const st = statusOf(a), se = el.querySelector('.status'); se.className = 'status ' + st.cls; se.textContent = st.text;
+      el.querySelectorAll('.mrow.meter').forEach(r => {
+        const v = m[r.dataset.k];
+        r.querySelector('.track b').style.width = clamp(v, 0, 100) + '%';
+        r.querySelector('.v').textContent = Math.round(v);
+        r.classList.toggle('low', v < LINE);
+      });
+      const at = actionText(a);
+      el.querySelector('.doing').innerHTML = at ? `Now: <b>${at}</b>` : '<span class="mono">Waiting to start</span>';
+      const more = el.querySelector('.more'); more.hidden = a.id !== selected;
+      if (a.id === selected) {
+        el.querySelectorAll('.mrow.want').forEach(r => {
+          const t = r.dataset.t, v = mind.S[t];
+          r.querySelector('.track b').style.width = Math.round(v * 100) + '%';
+          r.querySelector('.v').textContent = Math.round(v * 100) + '%';
+          r.classList.toggle('top', t === mind.dom);
+        });
+        el.querySelector('.why').textContent = whyText(a);
+        el.querySelector('.help').innerHTML = `<b>What helps:</b> ${HELP[mind.dom]}`;
+      }
+    });
+  }
+  function selectAgent(id) {
+    selected = id;
+    const a = agent(id); $('t-resist').checked = a.mind.resistOn; $('t-revise').checked = a.mind.reviseOn;
+    $('mind-name').textContent = a.name; $('hb-name').textContent = a.name;
+    if (drawerOpen && VIEW_TITLE[drawerView]) $('drawer-title').textContent = VIEW_TITLE[drawerView]();
+    updatePanels();
+  }
+  cardsEl.addEventListener('click', e => { const c = e.target.closest('.card'); if (c) selectAgent(c.dataset.id); });
+  cardsEl.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('card')) { e.preventDefault(); selectAgent(e.target.dataset.id); } });
+
+  /* ------------------------------------------------------------ mission bar */
+  const segs = [...document.querySelectorAll('#year .ys')];
+  const dotsEl = $('dots');
+  const pipsEl = $('pips'); pipsEl.innerHTML = '<span></span>'.repeat(E.PARAMS.effortMax);
+  const cutEls = [...document.querySelectorAll('#scorebar .cut')];
+  function updateMission() {
+    const ended = world.finished;
+    $('daytxt').textContent = ended ? (free ? '· free play' : '· complete') : `· day ${dayOf(world.tick)} of ${E.YEAR_LEN / E.TICKS_PER_DAY}`;
+    segs.forEach((s, i) => {
+      const p = ended ? 1 : clamp((world.tick - i * E.SEASON_LEN) / E.SEASON_LEN, 0, 1);
+      s.querySelector('i').style.width = (p * 100) + '%';
+      s.classList.toggle('now', !ended && i === world.seasonIdx);
+    });
+    const S = E.SEASONS[world.seasonIdx];
+    $('seasonnote').innerHTML = `<b>${S.name}.</b> ${S.note}`;
+    let th = 0, tk = 0; world.agents.forEach(a => { th += a.score.thrive; tk += a.score.ticks; });
+    const pct = tk ? th / tk : 0;
+    $('score').textContent = Math.round(pct * 100) + '%';
+    $('scorefill').style.width = clamp(pct * 100, 0, 100) + '%';
+    cutEls.forEach((c, i) => c.classList.toggle('hit', pct >= world.cuts[i]));
+    const now = world.agents.filter(a => world.thriving(a)).length;
+    [...dotsEl.children].forEach((d, i) => d.classList.toggle('on', i < now));
+    $('thrivetxt').textContent = `${now} of ${world.agents.length} thriving now`;
+    const eff = Math.floor(world.effort);
+    [...pipsEl.children].forEach((p, i) => p.classList.toggle('on', i < eff));
+    $('efftxt').textContent = `${eff}/${E.PARAMS.effortMax}`;
+    $('tickinfo').textContent = `mist ${world.fogLeft()} · berries ${world.berryCount()}`;
+  }
+
+  /* --------------------------------------------------------------- notebook */
+  const advEl = $('advice');
+  function updateNotebook() {
+    const adv = world.advice(); advCache = adv;
+    const urg = adv.filter(a => a.urgency >= 2).map(a => a.who + a.need).join('|');
+    if (urg && urg !== lastUrgKey && !(drawerOpen && drawerView === 'notebook')) att.notebook = performance.now() + 7000;
+    lastUrgKey = urg;
+    const key = adv.map(a => a.who + a.need + a.text.replace(/\d+/g, '#')).join('|');
+    if (key === advKey) {
+      [...advEl.querySelectorAll('.txt')].forEach((n, i) => { if (adv[i]) n.textContent = adv[i].text; });
+      return;
+    }
+    advKey = key;
+    advEl.innerHTML = adv.length ? adv.map((a, i) => `
+      <li><span class="d ${a.who}" style="--gc:${BODY[a.who] || '#3a5c53'}"></span>
+        <div class="tx"><span class="pr ${a.urgency >= 2 ? 'now' : ''}">${a.urgency >= 2 ? 'Now' : 'Soon'}${a.who === 'garden' ? ' · the garden' : ''}</span><span class="txt">${esc(a.text)}</span></div>
+        <button class="btn show" data-i="${i}">Show me</button></li>`).join('')
+      : '<li class="allgood" style="display:block;background:none;border:0;padding:2px 0">Everyone is doing fine right now. Watch them, or use the calm to prepare for the next season.</li>';
+  }
+  advEl.addEventListener('click', e => {
+    const b = e.target.closest('.show'); if (!b) return;
+    const a = advCache[+b.dataset.i]; if (!a) return;
+    if (a.who !== 'garden') selectAgent(a.who);
+    closeDrawer();
+    setTool(a.tool);
+    pulse = { x: a.x, y: a.y, until: performance.now() + 7000 };
+    setHint(`Click the glowing tile to ${a.tool === 'thorns' ? 'clear the thorns' : 'plant berries'}. Or ignore this advice: it is only a suggestion.`);
+    if (!playing) draw();
+  });
+
+  /* -------------------------------------------------------------- story log */
+  const LABEL = { REFLECT: 'Noticed', RESIST: 'Turned down', HELD: 'Self-control', REVISE: 'Learned', HABIT: 'New habit', DROP: 'Dropped', FAINT: 'Slept', WAKE: 'Woke', SEASON: 'Season', YEAR: 'Year', GARDENER: 'You' };
+  const CLS = { REFLECT: 'Noticed', RESIST: 'Turned', HELD: 'Self', REVISE: 'Learned', HABIT: 'Habit', DROP: 'Dropped', FAINT: 'Slept', WAKE: 'Woke', SEASON: 'Garden', YEAR: 'Garden', GARDENER: 'You' };
+  function updateLog() {
+    const learn = $('t-learn').checked;
+    const shown = world.events.filter(e => LABEL[e.kind] && (learn || e.kind !== 'REVISE')).slice(-40).reverse();
+    const key = shown.length ? shown[0].id + ':' + shown.length + ':' + learn : 'empty:' + learn;
+    if (key === logKey) return; logKey = key;
+    $('log').innerHTML = shown.length ? shown.map(e => `<li><span class="t">Day ${dayOf(e.t)}</span><span class="d ${e.who}" style="--gc:${BODY[e.who] || 'transparent'}"></span><span><span class="chip t-${CLS[e.kind]}">${LABEL[e.kind]}</span> ${esc(e.text)}</span></li>`).join('')
+      : '<li style="display:block"><span class="empty">Nothing yet. Press Play. Look for “Noticed” and “Self-control”: they show a creature changing its own mind.</span></li>';
+  }
+  function toastFor() {
+    world.events.forEach(e => {
+      if (e.id <= seenEvent) return; seenEvent = e.id;
+      let html = '';
+      const nowT = performance.now();
+      if (e.kind === 'HELD') att.mind = nowT + 6000;
+      if (['HELD', 'REFLECT', 'HABIT', 'DROP', 'FAINT'].includes(e.kind)) att.story = nowT + 6000;
+      if (e.kind === 'HABIT' || e.kind === 'DROP') att.book = nowT + 9000;
+      if (e.kind === 'HELD' && $('t-toast').checked) html = `<b>${e.name}</b> ${esc(e.text.slice(e.name.length + 1))}`;
+      if (e.kind === 'HABIT' && $('t-toast').checked) html = `<b>${e.name}</b> ${esc(e.text.slice(e.name.length + 1).split('. ')[0])}.`;
+      if (e.kind === 'SEASON') html = `<b>${esc(e.text.split('.')[0])}.</b> ${esc(e.text.split('.').slice(1).join('.').trim())}`;
+      if (html) { const t = $('toast'); t.innerHTML = html; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 4600); }
+    });
+  }
+
+  /* --------------------------------------------------------- inside the mind */
+  const sp = $('spark'), sctx = sp.getContext('2d');
+  function drawSpark(m) {
+    const W = sp.width, H = sp.height, padL = 8, padR = 14, padT = 8, padB = 8;
+    sctx.clearRect(0, 0, W, H);
+    sctx.strokeStyle = 'rgba(163,187,176,.18)'; sctx.lineWidth = 1;
+    [0, .25, .5, .75, 1].forEach(v => { const y = padT + (1 - v) * (H - padT - padB); sctx.beginPath(); sctx.moveTo(padL, y); sctx.lineTo(W - padR, y); sctx.stroke(); });
+    const tr = m.trace; if (tr.length < 2) return;
+    const dash = { SURVIVE: [], FLOURISH: [3, 5], CONNECT: [12, 4] };
+    TERMS.forEach(t => {
+      sctx.strokeStyle = COL[t]; sctx.lineWidth = 3; sctx.lineJoin = 'round'; sctx.lineCap = 'round'; sctx.setLineDash(dash[t]); sctx.beginPath();
+      tr.forEach((p, i) => { const x = padL + i / 59 * (W - padL - padR), y = padT + (1 - p.S[t]) * (H - padT - padB); i ? sctx.lineTo(x, y) : sctx.moveTo(x, y); });
+      sctx.stroke(); sctx.setLineDash([]);
+      const lp = tr[tr.length - 1], x = padL + (tr.length - 1) / 59 * (W - padL - padR), y = padT + (1 - lp.S[t]) * (H - padT - padB);
+      sctx.fillStyle = COL[t]; sctx.beginPath(); sctx.arc(x, y, 4.5, 0, 7); sctx.fill();
+    });
+  }
+  const NAMES = { GetFood: 'Food', Rest: 'Rest', Gather: 'Gather', Align: 'Align', Explore: 'Explore', RestEarly: 'Rest early', Picnic: 'Picnic', Together: 'Together' };
+  function drawNet(a) {
+    const m = a.mind, order = { SURVIVE: 0, FLOURISH: 1, CONNECT: 2 };
+    const defs = m.defs.slice().sort((p, q) => order[p.to] - order[q.to]);
+    const n = defs.length, WD = 380, hy = 112, my = 30, ty = 186, bw = 42, bh = 34;
+    const hx = i => (n === 1 ? WD / 2 : 26 + i * (WD - 52) / (n - 1));
+    const tx = { SURVIVE: 66, FLOURISH: 190, CONNECT: 314 };
+    const pos = {}; defs.forEach((d, i) => { pos[d.id] = hx(i); });
+    const metaX = { REFLECT: 82, RESIST: 190, REVISE: 298 };
+    const anyFlag = defs.some(d => m.ip[d.id].flag), anyRes = m.resistOn && defs.some(d => m.ip[d.id].resisting);
+    const recent = world.events.some(e => e.kind === 'REVISE' && e.who === a.id && world.tick - e.t < 6);
+    const acting = a.dec && a.sleep === 0 ? a.dec.ip : null;
+    let g = '';
+    defs.forEach(d => {
+      const s = m.ip[d.id];
+      g += `<line x1="${pos[d.id]}" y1="${hy + bh / 2}" x2="${tx[d.to]}" y2="${ty - 20}" stroke="${COL[d.to]}" stroke-width="${(1 + s.w * 5).toFixed(1)}" stroke-opacity="${(0.3 + 0.55 * clamp(s.S, 0, 1)).toFixed(2)}"${s.resisting ? ' stroke-dasharray="4 4"' : ''} stroke-linecap="round"/>`;
+      if (s.flag) g += `<line x1="${metaX.REFLECT}" y1="${my + 12}" x2="${pos[d.id]}" y2="${hy - bh / 2}" stroke="#f3bf42" stroke-width="1.4" stroke-dasharray="2 3"/>`;
+      if (s.resisting) g += `<line x1="${metaX.RESIST}" y1="${my + 12}" x2="${pos[d.id]}" y2="${hy - bh / 2}" stroke="#43cbc0" stroke-width="1.8" stroke-dasharray="5 3"/>`;
+    });
+    if (acting && m.ip[acting] && m.reviseOn) g += `<line x1="${metaX.REVISE}" y1="${my + 12}" x2="${pos[acting]}" y2="${hy - bh / 2}" stroke="#9bd07a" stroke-width="1.2" stroke-opacity=".6"/>`;
+    [['REFLECT', anyFlag, '#f3bf42'], ['RESIST', anyRes, '#43cbc0'], ['REVISE', m.reviseOn, '#9bd07a']].forEach(([nm, on, col]) => {
+      const lit = nm === 'REVISE' ? recent : on;
+      g += `<rect x="${metaX[nm] - 36}" y="${my - 12}" width="72" height="24" rx="12" fill="${lit ? col : '#0b1512'}" fill-opacity="${lit ? 0.3 : 1}" stroke="${on ? col : '#3a5c53'}" stroke-width="${lit ? 3 : 1.4}"/><text x="${metaX[nm]}" y="${my + 3.6}" text-anchor="middle" font-size="10.5" font-weight="600" style="fill:${on ? '#e8f1ec' : '#7f978d'}">${nm}</text>`;
+    });
+    defs.forEach(d => {
+      const s = m.ip[d.id], x = pos[d.id], act = acting === d.id;
+      g += `<rect x="${x - bw / 2}" y="${hy - bh / 2}" width="${bw}" height="${bh}" rx="7" fill="#0b1512" stroke="${act ? '#ffffff' : COL[d.to]}" stroke-width="${act ? 3 : 1.6}"/>`;
+      g += `<rect x="${x - bw / 2 + 3}" y="${hy + bh / 2 - 7}" width="${((bw - 6) * clamp(s.S, 0, 1)).toFixed(1)}" height="4" rx="2" fill="${COL[d.to]}"/>`;
+      const words = NAMES[d.id].split(' '), base = hy - 3 - (words.length - 1) * 5.25;
+      words.forEach((w, i) => { g += `<text x="${x}" y="${(base + i * 10.5).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="600">${w}</text>`; });
+      if (d.learned) g += `<circle cx="${x + bw / 2 - 2}" cy="${hy - bh / 2 + 2}" r="4.2" fill="#9bd07a" stroke="#0b1512" stroke-width="1.5"/>`;
+    });
+    TERMS.forEach(T => {
+      const S = m.S[T], r = 11 + 26 * S, dom = m.dom === T;
+      if (dom) g += `<circle cx="${tx[T]}" cy="${ty}" r="${(r + 4).toFixed(1)}" fill="none" stroke="#ffffff" stroke-width="2.4"/>`;
+      g += `<circle cx="${tx[T]}" cy="${ty}" r="${r.toFixed(1)}" fill="${COL[T]}" fill-opacity="${(0.3 + 0.6 * S).toFixed(2)}" stroke="${COL[T]}" stroke-width="2"/>`;
+      g += `<text x="${tx[T]}" y="${ty + 4}" text-anchor="middle" font-size="11" font-weight="700" style="fill:#0b1512">${Math.round(S * 100)}%</text>`;
+      g += `<text x="${tx[T]}" y="228" text-anchor="middle" font-size="10.5" font-weight="600" style="fill:${COL[T]}">${T}</text>`;
+    });
+    $('net').innerHTML = g;
+  }
+  function updateInspector() {
+    if (!(drawerOpen && drawerView === 'mind')) return;
+    const a = agent(selected), m = a.mind;
+    drawNet(a);
+    const rows = ['<div class="iprow head"><span>Habit</span><span>Serves</span><span>Weight</span><span>Pull</span><span>Record</span></div>'];
+    m.defs.forEach(d => {
+      const s = m.ip[d.id], ok = s.hist.filter(r => r.ok).length, n = s.hist.length;
+      const acting = a.dec && a.dec.ip === d.id && a.sleep === 0;
+      rows.push(`<div class="iprow${s.resisting ? ' flag' : ''}${acting ? ' act' : ''}" style="--c:var(--${d.to.toLowerCase()})">
+        <span class="nmx">${d.label}${d.learned ? ' <span class="chip new">new</span>' : ''}${s.resisting ? ' <span class="chip t-Turned">turned down</span>' : ''}</span>
+        <span class="to">${d.to}</span>
+        <span class="wt"><i><b style="width:${Math.round(s.w * 100)}%"></b></i><span class="mono">${s.w.toFixed(2)}</span></span>
+        <span class="mono" title="Current pull, after RESIST">${s.S.toFixed(2)}</span>
+        <span class="mono" title="Recent successes out of tries">${n ? ok + '/' + n : '–'}</span></div>`);
+    });
+    $('iptable').innerHTML = rows.join('');
+    drawSpark(m);
+  }
+
+  /* ------------------------------------------------------------ drawer + attention */
+  const drawer = $('drawer');
+  const VIEW_TITLE = { wants: () => agent(selected).name, book: () => agent(selected).name + '’s habit book', mind: () => 'Inside ' + agent(selected).name + '’s mind', notebook: () => 'Gardener’s notebook', story: () => 'What happened' };
+  function markSeen(v) {
+    if (v === 'story') storySeen = world.evSeq;
+    if (v === 'book') bookSeen = world.evSeq;
+    if (v === 'notebook') nbSeenKey = lastUrgKey;
+  }
+  function openDrawer(view) {
+    if (view === 'book' && level !== 2) view = 'wants';
+    if (!drawerOpen) {
+      drawerOpen = true; drawer.hidden = false;
+      if ($('t-pause').checked && playing) { resumeDrawer = true; setPlaying(false); }
+    }
+    drawerView = view; drawer.dataset.view = view;
+    document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.view === view)));
+    document.querySelectorAll('.mbtn').forEach(b => b.setAttribute('aria-expanded', String(b.dataset.view === view)));
+    $('drawer-title').textContent = VIEW_TITLE[view]();
+    markSeen(view); updatePanels(); if (!playing) draw();
+  }
+  function closeDrawer() {
+    if (!drawerOpen) return;
+    drawerOpen = false; drawer.hidden = true;
+    document.querySelectorAll('.mbtn').forEach(b => b.setAttribute('aria-expanded', 'false'));
+    if (resumeDrawer) { resumeDrawer = false; if (!overlayMode) setPlaying(true); }
+    cv.focus({ preventScroll: true });
+  }
+  function forceCloseDrawer() { drawerOpen = false; drawer.hidden = true; resumeDrawer = false; document.querySelectorAll('.mbtn').forEach(b => b.setAttribute('aria-expanded', 'false')); }
+  document.querySelectorAll('.mbtn').forEach(b => b.addEventListener('click', () => { if (drawerOpen && drawerView === b.dataset.view) closeDrawer(); else openDrawer(b.dataset.view); }));
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => openDrawer(t.dataset.view)));
+  $('drawer-close').addEventListener('click', closeDrawer);
+  window.addEventListener('keydown', ev => { if (ev.key === 'Escape' && drawerOpen && !overlayMode) closeDrawer(); });
+
+  function badge(id, n) { const b = $(id); b.hidden = !(n > 0); if (n > 0) b.textContent = n > 9 ? '9+' : String(n); }
+  function updateBadges() {
+    if (drawerOpen && drawerView === 'story') storySeen = world.evSeq;
+    if (drawerOpen && drawerView === 'book') bookSeen = world.evSeq;
+    let sN = 0, bN = 0; const ev = world.events;
+    for (let i = ev.length - 1; i >= 0; i--) {
+      const e = ev[i]; if (e.id <= storySeen && e.id <= bookSeen) break;
+      if (e.id > storySeen && KEYEV.has(e.kind)) sN++;
+      if (e.id > bookSeen && (e.kind === 'HABIT' || e.kind === 'DROP')) bN++;
+    }
+    badge('b-story', sN); badge('b-book', level === 2 ? bN : 0); badge('b-notebook', advCache.length);
+  }
+  function applyAttention(now) {
+    ['notebook', 'story', 'book', 'mind'].forEach(k => {
+      const el = document.querySelector(`.mbtn[data-view="${k}"]`);
+      el.classList.toggle('attn', now < att[k] && !(drawerOpen && drawerView === k));
+    });
+  }
+
+  /* ------------------------------------------------ habit book (level 2) */
+  function updateHabits() {
+    const box = $('habits'); box.hidden = level !== 2;
+    if (level !== 2) return;
+    const a = agent(selected), b = a.mind.book(), P = E.PARAMS;
+    $('hb-note').innerHTML = `A habit is made of parts. A new habit can be built only when each of its parts has been <b>used ${P.needRep} times</b> and <b>tested ${P.needTests} times</b> (it worked, or it did not), and it worked at least some of the time.`;
+    $('pb-parts').innerHTML = b.parts.map(p => {
+      const f = Math.min(1, (Math.min(p.rep, P.needRep) / P.needRep + Math.min(p.tests, P.needTests) / P.needTests) / 2);
+      return `<div class="pt${p.ready ? ' ready' : ''}"><b>${p.name}</b>used ${p.rep} · tested ${p.tests}<i><u style="width:${Math.round(f * 100)}%"></u></i></div>`;
+    }).join('');
+    $('pb-habits').innerHTML = b.habits.map(h => {
+      const d = h.def, st = a.mind.ip[d.id];
+      const missing = d.parts.filter(p => !b.parts.find(q => q.name === p).ready);
+      let text = '';
+      if (h.state === 'known') text = `Built. Trust ${st.w.toFixed(2)} · worked ${st.okTot} of ${st.tot} so far.`;
+      else if (h.state === 'dropped') text = `Given up: it worked only ${h.drop.ok} of ${h.drop.n} times.`;
+      else text = `Not built yet. Still practicing: ${missing.join(', ')}.`;
+      return `<li class="${h.state}"><span class="hn">${esc(d.label)}<span class="chip t-${d.to === 'SURVIVE' ? 'Noticed' : d.to === 'CONNECT' ? 'Turned' : 'Noticed'}" style="color:var(--${d.to.toLowerCase()})">${d.to}</span></span><span class="hp">${d.parts.join(' + ')}</span><span class="hs">${text}</span></li>`;
+    }).join('');
+  }
+  function updatePanels() { updateMission(); updateCards(); updateRoster(); updateNotebook(); updateLog(); updateInspector(); updateHabits(); updateBadges(); }
+
+  /* ---------------------------------------------------------------- dialogs */
+  const overlay = $('overlay'), dlg = $('dlg');
+  const NUM = () => (level === 2 ? 'Five' : 'Three');
+  const rulesHTML = () => `
+    <p>${NUM()} creatures live in this garden. <b>Your mission: guide them through one whole year</b> (4 seasons, 120 days). You cannot give orders. You can only change the garden, and the creatures decide for themselves.</p>
+    <ol>
+      <li><b>Each creature needs three things:</b> Energy (eat and rest), Discovery (see new places) and Company (be near friends). You see them as three meters.</li>
+      <li><b>A creature thrives when all three meters are above the white line.</b> Your score is the share of the year that the creatures thrive. Reach ${world.cuts.map(c => Math.round(c * 100) + '%').join(', ')} for ★, ★★ or ★★★.</li>
+      <li><b>Each creature also “wants” things, and its strongest want wins.</b> Click a creature to see what it wants and why. A creature that loves company will not explore much by itself.</li>
+      <li><b>Your tools cost effort.</b> One point comes back every day, so choose your moment. The notebook suggests what to do, and “Show me” points at the spot.</li>
+      <li><b>Seasons matter.</b> Berries grow slowly in autumn and barely grow in winter, so plant ahead.</li>
+      <li><b>Look deeper any time.</b> The creatures on the left and the buttons at the bottom open the notebook, the story and each creature’s mind. A button glows when something new happens.</li>
+      <li><b>Creatures learn.</b> A habit that keeps failing gets turned down. A lantern that keeps disappointing stops working.</li>
+      ${level === 2 ? `<li><b>In Level 2 they can build new habits.</b> Every habit is made of parts, like “Go to” + “Berries”. When a creature has used each part ${E.PARAMS.needRep} times and tested it ${E.PARAMS.needTests} times, it can build a new habit from those parts. A new habit starts weak. If it works, it gets stronger. If it keeps failing, the creature gives it up. Open the habit book to watch this happen.</li>
+      <li><b>Five is a crowd.</b> There is more competition for berries, and creatures feel lonely when nobody is near and stressed when everyone is close.</li>` : ''}
+    </ol>`;
+  function openOverlay(mode, html, focusSel) {
+    forceCloseDrawer();
+    overlayMode = mode; dlg.innerHTML = html; overlay.hidden = false;
+    const f = dlg.querySelector(focusSel || 'button'); if (f) f.focus();
+  }
+  function closeOverlay() { overlay.hidden = true; overlayMode = null; cv.focus({ preventScroll: true }); }
+  function showBriefing() {
+    openOverlay('briefing', `<h2 id="dlg-title">Level ${level}: ${level === 2 ? 'five friends and new habits' : 'three friends'}</h2>${rulesHTML()}
+      <div class="btnrow"><button class="btn primary" id="begin">Begin the year</button></div>`, '#begin');
+    $('begin').addEventListener('click', () => { closeOverlay(); setPlaying(true); });
+  }
+  function showRules() {
+    resumeAfter = playing || resumeDrawer; setPlaying(false);
+    openOverlay('rules', `<h2 id="dlg-title">How to play</h2>${rulesHTML()}
+      <div class="btnrow"><button class="btn primary" id="back">Back to the garden</button><button class="btn" id="about">How the model works</button></div>`, '#back');
+    $('back').addEventListener('click', () => { closeOverlay(); if (resumeAfter) setPlaying(true); });
+    $('about').addEventListener('click', () => {
+      openOverlay('rules', `<h2 id="dlg-title">How the model works</h2>${$('about-src').innerHTML}<div class="btnrow"><button class="btn primary" id="back2">Back to the garden</button></div>`, '#back2');
+      $('back2').addEventListener('click', () => { closeOverlay(); if (resumeAfter) setPlaying(true); });
+    });
+  }
+  const INSIGHT = {
+    energy: 'Energy was the hardest need this year. Next time, plant berry bushes in autumn, before winter makes food scarce.',
+    discovery: 'Discovery was the hardest need this year. Next time, plant seeds in the mist early, so the creatures always have something new to find.',
+    company: 'Company was the hardest need this year. Next time, keep hedges from splitting the friends, and plant berries where they can meet.'
+  };
+  function showEnd() {
+    const s = world.summary(), pct = Math.round(s.overall * 100), cuts = world.cuts.map(c => Math.round(c * 100));
+    const words = ['The garden struggled', 'A hard year, but you got through it', 'A good year', 'A thriving garden'][s.stars];
+    const stars = [0, 1, 2].map(i => `<span class="${i < s.stars ? '' : 'off'}">★</span>`).join('');
+    let built = 0, dropped = 0;
+    const rows = s.per.map(p => {
+      const a = agent(p.id), bk = a.mind.book();
+      const kn = bk.habits.filter(h => h.state === 'known').map(h => h.def.label), dr = bk.habits.filter(h => h.state === 'dropped').length;
+      built += kn.length; dropped += dr;
+      const hb = level === 2 ? ` · ${kn.length ? 'built: ' + kn.join(', ') : 'built no new habits'}${dr ? ` · gave up ${dr}` : ''}` : '';
+      return `<div class="endrow"><span class="nm">${p.name}</span><span class="pc">${Math.round(p.thrive * 100)}%</span>
+      <span class="sm">Energy in range ${Math.round(p.energyOK * 100)}% · Discovery ${Math.round(p.discoveryOK * 100)}% · Company ${Math.round(p.companyOK * 100)}%${p.held ? ` · ${p.held} moment${p.held > 1 ? 's' : ''} of self-control` : ''}${p.faints ? ` · fell asleep ${p.faints}×` : ''}${hb}</span></div>`;
+    }).join('');
+    const habitNote = level === 2 ? `<p class="insight">This year the creatures built <b>${built}</b> new habit${built === 1 ? '' : 's'} from parts and gave up <b>${dropped}</b>. Open the habit book on a creature to see which parts it practiced first.</p>` : '';
+    const next = level === 1
+      ? `<button class="btn ${s.stars >= 1 ? 'primary' : ''}" id="lvl2">Play Level 2</button><button class="btn" id="again">Play Level 1 again</button>`
+      : `<button class="btn primary" id="again">Play Level 2 again</button><button class="btn" id="lvl1">Back to Level 1</button>`;
+    openOverlay('end', `<h2 id="dlg-title">Level ${level}: the year is over</h2>
+      <div><div class="stars" aria-label="${s.stars} of 3 stars">${stars}</div></div>
+      <p><b>${words}.</b> Your creatures were thriving <b>${pct}%</b> of the year. (Stars are at ${cuts.join('%, ')}%.)</p>
+      <div>${rows}</div>
+      <p class="insight">${INSIGHT[s.weakest]}</p>${habitNote}
+      <div class="btnrow">${next}<button class="btn" id="keep">Keep watching</button></div>`, level === 1 && s.stars >= 1 ? '#lvl2' : '#again');
+    $('again').addEventListener('click', () => newGame(level));
+    if ($('lvl2')) $('lvl2').addEventListener('click', () => newGame(2, true));
+    if ($('lvl1')) $('lvl1').addEventListener('click', () => newGame(1, true));
+    $('keep').addEventListener('click', () => { free = true; closeOverlay(); setPlaying(true); updatePanels(); });
+  }
+  window.addEventListener('keydown', ev => {
+    if (ev.key === 'Escape' && overlayMode === 'rules') { closeOverlay(); if (resumeAfter) setPlaying(true); }
+  });
+
+  /* --------------------------------------------------------------- controls */
+  const hint = $('hint');
+  const setHint = (msg, warn) => { hint.textContent = msg; hint.classList.toggle('warn', !!warn); hint.hidden = !msg || (tool === 'inspect' && !warn); };
+  function flashHint(msg) { setHint(msg, true); clearTimeout(hintTimer); hintTimer = setTimeout(() => setHint(HINTS[tool]), 3000); }
+  function setTool(t) {
+    tool = t;
+    document.querySelectorAll('[data-tool]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.tool === t)));
+    setHint(HINTS[t]); cv.style.cursor = t === 'inspect' ? 'pointer' : 'crosshair';
+  }
+  setTool('inspect');
+  document.querySelectorAll('[data-tool]').forEach(b => b.addEventListener('click', () => { setTool(b.dataset.tool); pulse = null; }));
+  document.querySelectorAll('[data-speed]').forEach(b => b.addEventListener('click', () => {
+    speed = parseFloat(b.dataset.speed);
+    document.querySelectorAll('[data-speed]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+  const playBtn = $('play');
+  function setPlaying(p) { if (p) resumeDrawer = false; playing = p; playBtn.textContent = p ? 'Pause' : 'Play'; playBtn.setAttribute('aria-pressed', String(p)); }
+  playBtn.addEventListener('click', () => setPlaying(!playing));
+  $('step').addEventListener('click', () => { setPlaying(false); stepOnce(); });
+  $('howto').addEventListener('click', showRules);
+  function applyLevel() {
+    document.querySelectorAll('[data-level]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.level === level)));
+    const n = world.agents.length, word = n === 5 ? 'five' : 'three';
+    document.querySelectorAll('.mbtn[data-view="book"], .tab[data-view="book"]').forEach(x => { x.hidden = level !== 2; });
+    if (level !== 2 && drawerView === 'book') drawerView = 'wants';
+    dotsEl.innerHTML = '<span></span>'.repeat(n);
+    cutEls.forEach((c, i) => { c.style.left = (world.cuts[i] * 100) + '%'; });
+    $('scorebar').setAttribute('aria-label', `Score so far, with star levels at ${world.cuts.map(c => Math.round(c * 100)).join(', ')} percent`);
+    document.querySelectorAll('#scorebar .cut').forEach(c => { c.style.left = c.style.left; });
+  }
+  function newGame(lv, brief) {
+    if (lv) level = lv;
+    world = new E.World(1 + Math.floor(Math.random() * 99999), { level });
+    forceCloseDrawer(); att.notebook = att.story = att.book = att.mind = 0; storySeen = bookSeen = 0; lastUrgKey = '';
+    selected = 'finn'; buildCards(); buildRoster(); applyLevel(); resetFog(); seenEvent = 0; logKey = ''; advKey = '';
+    endShown = false; free = false; pulse = null; acc = 0;
+    $('toast').classList.remove('show'); closeOverlay(); selectAgent('finn'); setPlaying(false);
+    if (brief) showBriefing(); else setPlaying(true);
+  }
+  document.querySelectorAll('[data-level]').forEach(b => b.addEventListener('click', () => {
+    const lv = +b.dataset.level;
+    if (lv === level && world.tick < 40) return;
+    if (world.tick < 40 || world.finished || confirm('Switch level? This year will be lost.')) newGame(lv, true);
+  }));
+  $('reset').addEventListener('click', () => { if (world.tick < 40 || confirm('Start a new year? This one will be lost.')) newGame(level); });
+  $('t-resist').addEventListener('change', e => { agent(selected).mind.resistOn = e.target.checked; updatePanels(); });
+  $('t-revise').addEventListener('change', e => { agent(selected).mind.reviseOn = e.target.checked; updatePanels(); });
+  $('t-learn').addEventListener('change', () => { logKey = ''; updateLog(); });
+
+  const tileAt = ev => {
+    const r = cv.getBoundingClientRect();
+    return { x: Math.floor((ev.clientX - r.left) / r.width * N), y: Math.floor((ev.clientY - r.top) / r.height * N) };
+  };
+  cv.addEventListener('pointermove', ev => { hover = tileAt(ev); if (!playing) draw(); });
+  cv.addEventListener('pointerleave', () => { hover = null; if (!playing) draw(); });
+  cv.addEventListener('pointerdown', ev => {
+    if (overlayMode) return;
+    const p = tileAt(ev); let msg = '', done = '';
+    const i = p.y * N + p.x;
+    if (tool === 'inspect') {
+      let best = null, bd = 2.2;
+      world.agents.forEach(a => { const d = Math.hypot(a.x - p.x, a.y - p.y); if (d < bd) { bd = d; best = a; } });
+      if (best) { selectAgent(best.id); openDrawer('wants'); } else flashHint('No creature there. Click closer to one.');
+    } else if (tool === 'berries') { const fogged = world.fog[i]; msg = world.addBerries(p.x, p.y); if (!msg) done = fogged ? 'You planted seeds in the mist. The creatures do not know yet.' : 'You planted a berry bush.'; }
+    else if (tool === 'hedge') { const had = world.wall[i]; msg = world.toggleWall(p.x, p.y); if (!msg) done = had ? 'You removed a hedge.' : 'You placed a hedge.'; }
+    else if (tool === 'thorns') { const had = world.haz[i]; msg = world.toggleThorns(p.x, p.y); if (!msg) done = had ? 'You cleared some thorns.' : 'You grew thorns.'; }
+    else if (tool === 'glimmer') { msg = world.addLure(p.x, p.y); if (!msg) done = 'You lit a lantern.'; }
+    if (msg) flashHint(msg);
+    if (done) { world.emitWorld('GARDENER', done, 'You'); if (pulse && pulse.x === p.x && pulse.y === p.y) { pulse = null; setHint(HINTS[tool]); } }
+    updatePanels(); if (!playing) draw();
+  });
+  window.addEventListener('keydown', ev => {
+    if (ev.code === 'Space' && !overlayMode && (document.activeElement === document.body || document.activeElement === cv)) { ev.preventDefault(); setPlaying(!playing); }
+  });
+
+  /* ------------------------------------------------------------------ loop */
+  function afterStep() {
+    toastFor();
+    if (world.finished && !endShown && !free) { endShown = true; setPlaying(false); updatePanels(); showEnd(); return; }
+    updatePanels();
+  }
+  function stepOnce() { world.step(); afterStep(); }
+  function draw(alpha) { render(alpha == null ? 1 : alpha, performance.now() / 1000); }
+  function frame(now) {
+    const dt = Math.min(250, now - last); last = now;
+    let alpha = 1;
+    if (playing) {
+      acc += dt * speed;
+      let steps = 0;
+      while (acc >= TICK_MS && steps < 8 && playing) { acc -= TICK_MS; world.step(); steps++; if (world.finished && !endShown && !free) break; }
+      if (steps) afterStep();
+      alpha = Math.min(1, acc / TICK_MS);
+    }
+    render(playing ? alpha : 1, now / 1000);
+    applyAttention(now);
+    requestAnimationFrame(frame);
+  }
+  applyLevel(); selectAgent('finn'); updatePanels();
+  showBriefing();
+  requestAnimationFrame(frame);
+  window.__garden = { world: () => world, level: () => level, setPlaying, showEnd, newGame };
+})();
+
+</script>
+
+</body></html>
